@@ -97,9 +97,9 @@ class regmap:
     @keyword('Elemement `${locator}´ in `${constructDict}´ should be equal to `${expectedValue}´')
     def register_element_should_be_equal(self, locator:str, constructDict, expectedValue):
         robot.api.logger.info(repr(constructDict) + " " + str(constructDict))
-        element = self._get_element_from_constructDict(constructDict, locator)
+        element = _get_element_from_constructDict(constructDict, locator)
         assert element == expectedValue, f"observed value `{str(element)}´ does not match expected `{expectedValue}´ in `{str(constructDict)}´ at `{locator}´"
 
     @keyword('Get elemement `${locator}´ from ${constructDict}')
     def get_register_element(self, locator:str, constructDict):
-        return self._get_element_from_constructDict(constructDict, locator)
+        return _get_element_from_constructDict(constructDict, locator)
