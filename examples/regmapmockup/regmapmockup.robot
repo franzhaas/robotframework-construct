@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation      This is a simple example for a robot file using constructRF demonstrating the regmap feature
-
+Documentation      This is a simple example for a robot file using robotframework-construct demonstrating the regmap feature
 Library           robotframework_construct.regmap
 
 *** Test Cases ***

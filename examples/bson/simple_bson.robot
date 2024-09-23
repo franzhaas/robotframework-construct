@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation      This is a simple example for a robot file using constructRF using bson as an example. 
+Documentation      This is a simple example for a robot file using robotframework-construct using bson as an example. 
 ...                To run it use.:
 ...                uv run robot -P examples/bson/ examples/bson/simple_bson.robot
 Library           bson            
