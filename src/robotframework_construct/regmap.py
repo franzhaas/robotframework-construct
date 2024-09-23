@@ -31,7 +31,8 @@ class regmap:
             try:
                 reg = int(reg)
             except ValueError:
-                assert False, f"could not find register {reg} in regmap {identifier}, neither an Integer nor a member of {", ".join(subconNames)}"
+                emsg = f"could not find register {reg} in regmap {identifier}, neither an Integer nor a member of {", ".join(subconNames)}"
+                assert False, emsg
             try:
                 relevantStruct = self._regmaps[identifier].regmap.subcons[reg]
             except IndexError:
