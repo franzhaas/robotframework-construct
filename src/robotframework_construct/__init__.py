@@ -9,6 +9,24 @@ import robot.api.logger
 
 _split_at_dot_escape_with_dotdot = re.compile(r'(?<!\.)\.(?!\.)')
 
+
+def _get_element_from_constructDict(constructDict, locator):
+        assert isinstance(constructDict, dict), f"constructDict should be a dict, but was `{type(constructDict)}´"
+        assert isinstance(locator, str), f"locator should be a string, but was `{type(locator)}´"
+        original = constructDict
+        try:
+            for item in _split_at_dot_escape_with_dotdot.split(locator):
+                if isinstance(constructDict, list):
+                    constructDict = constructDict[int(item)]
+                else:
+                    constructDict = constructDict[item]
+        except KeyError:
+            assert False, f"could not find `{locator}´ in `{original}´"
+        except TypeError as e:
+            assert False, f"Cant lookup in `{type(constructDict)}´, which was encountered while looking up `{locator}´ in `{original}´ due to `{e}´"
+        return constructDict
+
+
 @library
 class robotframework_construct:
     ROBOT_AUTO_KEYWORDS = False
@@ -50,19 +68,3 @@ class robotframework_construct:
     @keyword('Get elemement `${locator}´ from ${constructDict}')
     def get_construct_element(self, constructDict:dict, locator:str, expectedValue):
         return self._get_element_from_constructDict(constructDict, locator)
-
-    def _get_element_from_constructDict(self, constructDict, locator):
-        assert isinstance(constructDict, dict), f"constructDict should be a dict, but was `{type(constructDict)}´"
-        assert isinstance(locator, str), f"locator should be a string, but was `{type(locator)}´"
-        original = constructDict
-        try:
-            for item in _split_at_dot_escape_with_dotdot.split(locator):
-                if isinstance(constructDict, list):
-                    constructDict = constructDict[int(item)]
-                else:
-                    constructDict = constructDict[item]
-        except KeyError:
-            assert False, f"could not find `{locator}´ in `{original}´"
-        except TypeError as e:
-            assert False, f"Cant lookup in `{type(constructDict)}´, which was encountered while looking up `{locator}´ in `{original}´ due to `{e}´"
-        return constructDict

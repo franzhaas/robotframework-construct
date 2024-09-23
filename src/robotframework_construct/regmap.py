@@ -4,6 +4,7 @@ import importlib
 import construct
 import collections
 from dataclasses import dataclass
+from robotframework_construct import _get_element_from_constructDict
 
 
 @dataclass
@@ -45,11 +46,10 @@ class regmap:
     def register_regmap(self, spec: str, library: str, identifier: str):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
-        assert isinstance(spec, dict), f"spec should be a dictionary, but was {type(spec)}"
-        assert all(isinstance(key, int) for key in spec.keys()), f"keys in spec should be integers, but where not ({", ".join(spec.keys())})"
-        assert all(isinstance(item, construct.Construct) for item in spec.values()), f"values in spec should be Constructs, but where not ({", ".join(type(item) for item in spec.keys())})"
-        assert all(hasattr(item, "name") for item in spec.values()), "All elements of the construct regmap need to have an identifiable name"
-        assert all(item.name != "" for item in spec.values()), "All elements of the construct regmap need to have an identifiable name"
+        assert isinstance(spec, construct.Construct), f"spec should be a Construct, but was {type(spec)}"
+        assert not isinstance(spec, construct.core.Compiled), f"spec must not be a compiled Construct, but was {type(spec)}"
+        assert all(hasattr(item, "name") for item in spec.subcons()), "All elements of the construct regmap need to have an identifiable name"
+        assert all(item.name != "" for item in spec.subcons()), "All elements of the construct regmap need to have an identifiable name"
         assert (identifier not in self._regmaps or self._regmaps[identifier].regmap is None), f"not overwriting regmap {identifier}"
         self._regmaps[identifier].regmap = spec
 
@@ -93,3 +93,13 @@ class regmap:
             assert len(dataOut) == self._regmaps[identifier].reg_size, f"register size should remain constant but {self._regmaps[identifier].reg_size} and {len(dataOut)} sizes where observed"
         self._regmaps[identifier].reg_size = len(dataOut)
         return self._regmaps[identifier].write_reg(reg, dataOut)
+
+    @keyword('Elemement `${locator}´ in `${constructDict}´ should be equal to `${expectedValue}´')
+    def register_element_should_be_equal(self, locator:str, constructDict, expectedValue):
+        robot.api.logger.info(repr(constructDict) + " " + str(constructDict))
+        element = self._get_element_from_constructDict(constructDict, locator)
+        assert element == expectedValue, f"observed value `{str(element)}´ does not match expected `{expectedValue}´ in `{str(constructDict)}´ at `{locator}´"
+
+    @keyword('Get elemement `${locator}´ from ${constructDict}')
+    def get_register_element(self, locator:str, constructDict):
+        return self._get_element_from_constructDict(constructDict, locator)
