@@ -1,4 +1,4 @@
-from construct import Struct, Int8ul, Int8sl, Int32sl, Int64sl, Int64ul, Float64l, Array, Byte, GreedyBytes, CString, Prefixed, Switch, this, LazyBound, Pass, GreedyRange, Rebuild, len_, this
+from construct import Struct, Int8ul, Int8sl, Int32sl, Int64sl, Int64ul, Float64l, Array, Byte, GreedyBytes, CString, Prefixed, Switch, LazyBound, Pass, GreedyRange, Rebuild, this
 
 # Basic Types
 byte = Byte
@@ -48,3 +48,8 @@ document = Struct(
     "size" / Rebuild(int32, _calc_size),
     "elements" / e_list
 )
+
+compiled_document = Struct(
+    "size" / int32,
+    "elements" / e_list
+).compile()

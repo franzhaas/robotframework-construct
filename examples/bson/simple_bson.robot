@@ -4,10 +4,12 @@ Documentation      This is a simple example for a robot file using constructRF u
 ...                uv run robot -P examples/bson/ examples/bson/simple_bson.robot
 Library           bson            
 Library           robotframework_construct
+*** Variables ***
+${bson_construct}    document
 *** Test Cases ***
 Example Test Case
     [Documentation]    This is an example test case.
-    Register construct `document´ from `bson_construct´ as `bson_document´
+    Register construct `${bson_construct}´ from `bson_construct´ as `bson_document´
     ${my_dict}=    Create Dictionary    hey=you
     ${blob}=    bson.encode       ${my_dict}
     ${returnedDict}=    Parse ${blob} using construct `bson_document´
