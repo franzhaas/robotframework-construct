@@ -2,13 +2,14 @@
 name = "robotframework-construct"
 version = "0.1.0"
 description = "Infrastructure to use construct Structs in robotframework"
+
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "construct>=2.10.70",
     "robotframework>=7.1",
 ]
-
+license = { text = "Apache-2.0" }
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
