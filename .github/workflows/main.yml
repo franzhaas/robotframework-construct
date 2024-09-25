@@ -26,10 +26,11 @@ jobs:
       run: |
         python -m pip install uv
         uv lock
-        uv sync
+        uv sync --extra test
 
     - name: Run Robot Framework tests
       run: |
-        uv run robot -P examples/bson/ examples/bson/simple_bson.robot
+        uv run robot -L TRACE -P examples/bson/ examples/bson/simple_bson.robot
         uv run robot -L TRACE --variable bson_construct:compiled_document -P examples/bson/ examples/bson/simple_bson.robot
         uv run robot -L TRACE -P examples/regmapmockup/ examples/regmapmockup/regmapmockup.robot
+        uv run ruff check .
