@@ -12,6 +12,6 @@ Example Test Case
     Register construct `${bson_construct}´ from `bson_construct´ as `bson_document´
     ${my_dict}=    Create Dictionary    hey=you
     ${blob}=    bson.encode       ${my_dict}
-    ${returnedDict}=    Parse ${blob} using construct `bson_document´
+    ${returnedDict}=    Parse `${blob}´ using construct `bson_document´
     Elemement `elements.0.value´ in `${returnedDict}´ should be equal to `you´
     Run Keyword And Expect Error    *    Elemement `elements.0.value´ in `${returnedDict}´ should be equal to `me´

@@ -20,5 +20,9 @@ Example Test Case
     Read register `3` from `dsp´
     Write register `0` in `dsp´ with `${{ {"add": 0, "sub": 0, "mul": 0, "div": 1} }}´
     Read register `3` from `dsp´
-    ${rval}=      Read register `0` from `dsp´
-    Log           ${rval}
+    ${reg0}=      Read register `0` from `dsp´
+    Get elemement `div´ from `${reg0}´
+    ${reg0}=      Modify the elemement located at `div´ of `${reg0}´ to `${0}´
+    ${reg0}=      Modify the elemement located at `add´ of `${reg0}´ to `1´
+    Write register `0` in `dsp´ with `${reg0}´
+    Read register `3` from `dsp´

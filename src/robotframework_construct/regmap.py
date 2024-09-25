@@ -4,7 +4,7 @@ import importlib
 import construct
 import collections
 from dataclasses import dataclass
-from robotframework_construct import _get_element_from_constructDict
+from robotframework_construct import _construct_interface_basics
 
 
 @dataclass
@@ -16,11 +16,12 @@ class _regmap_entry:
 
 
 @library
-class regmap:
+class regmap(_construct_interface_basics):
     ROBOT_AUTO_KEYWORDS = False
 
     def __init__(self):
         self._regmaps = collections.defaultdict(_regmap_entry)
+        super().__init__()
 
     def _get_subcon(self, reg, identifier):
         try:
@@ -95,13 +96,3 @@ class regmap:
             assert len(dataOut) == self._regmaps[identifier].reg_size, f"register size should remain constant but {self._regmaps[identifier].reg_size} and {len(dataOut)} sizes where observed"
         self._regmaps[identifier].reg_size = len(dataOut)
         return self._regmaps[identifier].write_reg(reg, dataOut)
-
-    @keyword('Elemement `${locator}´ in `${constructDict}´ should be equal to `${expectedValue}´')
-    def register_element_should_be_equal(self, locator:str, constructDict, expectedValue):
-        robot.api.logger.info(repr(constructDict) + " " + str(constructDict))
-        element = _get_element_from_constructDict(constructDict, locator)
-        assert element == expectedValue, f"observed value `{str(element)}´ does not match expected `{expectedValue}´ in `{str(constructDict)}´ at `{locator}´"
-
-    @keyword('Get elemement `${locator}´ from ${constructDict}')
-    def get_register_element(self, locator:str, constructDict):
-        return _get_element_from_constructDict(constructDict, locator)
