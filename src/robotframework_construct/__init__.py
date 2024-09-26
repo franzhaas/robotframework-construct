@@ -3,7 +3,7 @@ import construct
 import io
 import importlib
 import re
-from robot.api.deco import keyword, library
+from robot.api.deco import keyword
 import robot.api.logger
 
 
