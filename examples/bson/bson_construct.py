@@ -1,4 +1,4 @@
-from construct import Struct, Int8ul, Int8sl, Int32sl, Int64sl, Int64ul, Float64l, Array, Byte, GreedyBytes, CString, Prefixed, Switch, LazyBound, Pass, GreedyRange, Rebuild, this
+from construct import Struct, Int8ul, Int8sl, Int32sl, Int64sl, Int64ul, Float64l, Const, Array, Byte, GreedyBytes, CString, Prefixed, Switch, LazyBound, Pass, GreedyRange, Rebuild, this
 
 # Basic Types
 byte = Byte
@@ -42,14 +42,16 @@ element = Struct(
 e_list = GreedyRange(element)
 
 def _calc_size(this):
-    return  len(e_list.build(this["elements"]))
+    return  len(e_list.build(this["elements"]))+5
 
 document = Struct(
     "size" / Rebuild(int32, _calc_size),
-    "elements" / e_list
+    "elements" / e_list,
+    "EOO" / Const(b"\x00")
 )
 
 compiled_document = Struct(
     "size" / int32,
-    "elements" / e_list
+    "elements" / e_list,
+    "EOO" / Const(b"\x00")
 ).compile()
