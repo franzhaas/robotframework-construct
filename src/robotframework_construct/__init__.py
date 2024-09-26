@@ -11,6 +11,13 @@ class _construct_interface_basics:
     def __init__(self, element_seperator: str =r".") -> None:
         self.set_element_seperator(element_seperator)
 
+    def _convert_to_current_type(self, expectedValue, element):
+        try:
+            expectedValue = type(element)(expectedValue)
+        except ValueError:
+            assert False, f"could not convert `{expectedValue}´ of type `{type(expectedValue)}´ to `{type(element)}´ of the original value `{element}´"
+        return expectedValue
+
     def _get_element_from_constructDict(self, constructDict, locator):
         assert isinstance(constructDict, dict), f"constructDict should be a dict, but was `{type(constructDict)}´"
         assert isinstance(locator, str), f"locator should be a string, but was `{type(locator)}´"
@@ -21,10 +28,8 @@ class _construct_interface_basics:
                     constructDict = constructDict[int(item)]
                 else:
                     constructDict = constructDict[item]
-        except KeyError:
+        except (KeyError, TypeError, IndexError):
             assert False, f"could not find `{locator}´ in `{original}´"
-        except TypeError as e:
-            assert False, f"Cant lookup in `{type(constructDict)}´, which was encountered while looking up `{locator}´ in `{original}´ due to `{e}´"
         return constructDict
     
     def _set_element_from_constructDict(self, constructDict, locator, value):
@@ -40,11 +45,9 @@ class _construct_interface_basics:
                     constructDict = constructDict[int(item)]
                 else:
                     constructDict = constructDict[item]
-        except KeyError:
+            orig = getattr(constructDict, target)
+        except (KeyError, AttributeError, IndexError):
             assert False, f"could not find `{locator}´ in `{original}´"
-        except TypeError as e:
-            assert False, f"Cant lookup in `{type(constructDict)}´, which was encountered while looking up `{locator}´ in `{original}´ due to `{e}´"
-        orig = getattr(constructDict, target)
         try:
             value = type(orig)(value)
         except ValueError:
@@ -59,11 +62,13 @@ class _construct_interface_basics:
     @keyword('Elemement `${locator}´ in `${constructDict}´ should be equal to `${expectedValue}´')
     def construct_element_should_be_equal(self, locator:str, constructDict, expectedValue):
         element = self._get_element_from_constructDict(constructDict, locator)
+        expectedValue = self._convert_to_current_type(expectedValue, element)
         assert element == expectedValue, f"observed value `{str(element)}´ does not match expected `{expectedValue}´ in `{str(constructDict)}´ at `{locator}´"
 
     @keyword('Elemement `${locator}´ in `${constructDict}´ should not be equal to `${expectedValue}´')
     def construct_element_should_not_be_equal(self, locator:str, constructDict, expectedValue):
         element = self._get_element_from_constructDict(constructDict, locator)
+        expectedValue = self._convert_to_current_type(expectedValue, element)
         assert element != expectedValue, f"observed value `{str(element)}´ is not distinct to `{expectedValue}´ in `{str(constructDict)}´ at `{locator}´"
 
     @keyword('Get elemement `${locator}´ from `${constructDict}´')
@@ -76,9 +81,7 @@ class _construct_interface_basics:
         return constructDict
 
 
-@library
 class robotframework_construct(_construct_interface_basics):
-    ROBOT_AUTO_KEYWORDS = False
 
     def __init__(self):
         self.constructs = {}
@@ -103,7 +106,7 @@ class robotframework_construct(_construct_interface_basics):
         robot.api.logger.info(f"""parsed: {rVal} using {identifier} from {binarydata}""")
         return rVal
     
-    @keyword('Generate binary from `${data}´ using construct `{identifier}´')
+    @keyword('Generate binary from `${data}´ using construct `${identifier}´')
     def generate_binary_data_using_construct(self, data: dict, identifier: str):
         rVal = (self.constructs[identifier].build(data))
         robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")

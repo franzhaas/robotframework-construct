@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-robot-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.12]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install uv
+        uv lock
+        uv sync --extra test
+
+    - name: Run Robot Framework tests
+      run: |
+        uv run cosmic-ray init mutation_basic.toml mutation_basic.sqlite
+        uv run cosmic-ray --verbosity=INFO baseline mutation_basic.toml
+        uv run cosmic-ray exec mutation_basic.toml mutation_basic.sqlite
+        uv run cr-html mutation_basic.sqlite > report2.html
+        uv run cr-report mutation_basic.sqlite | tee report.txt
+        cat report.txt | grep "surviving mutants: 0"
