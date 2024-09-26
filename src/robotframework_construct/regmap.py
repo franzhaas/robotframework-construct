@@ -1,23 +1,18 @@
-from robot.api.deco import keyword, library
+from robot.api.deco import keyword
 import robot.api.logger
 import importlib
 import construct
 import collections
-from dataclasses import dataclass
 from robotframework_construct import _construct_interface_basics
 
 
-@dataclass
 class _regmap_entry:
     regmap: construct.Construct = None
     read_reg: callable = None
     write_reg: callable = None
-    reg_size: int = -1
 
 
-@library
 class regmap(_construct_interface_basics):
-    ROBOT_AUTO_KEYWORDS = False
 
     def __init__(self):
         self._regmaps = collections.defaultdict(_regmap_entry)
@@ -49,9 +44,11 @@ class regmap(_construct_interface_basics):
         spec = getattr(lib, spec)
         assert isinstance(spec, construct.Construct), f"spec should be a Construct, but was {type(spec)}"
         assert not isinstance(spec, construct.core.Compiled), f"spec must not be a compiled Construct, but was {type(spec)}"
-        assert all(hasattr(item, "name") for item in spec.subcons), "All elements of the construct regmap need to have an identifiable name"
-        assert all(item.name != "" for item in spec.subcons), "All elements of the construct regmap need to have an identifiable name"
-        assert (identifier not in self._regmaps or self._regmaps[identifier].regmap is None), f"not overwriting regmap {identifier}"
+        assert len(spec.subcons), "The construct regmap needs to have at least one element"
+        assert all(hasattr(item, "name") and isinstance(item.name, str) and len(item.name) for item in spec.subcons), "All elements of the construct regmap need to have an identifiable name"
+        assert self._regmaps[identifier].regmap is None, f"not overwriting regmap {identifier}"
+        assert len(set(item.sizeof() for item in spec.subcons)) in {1}, "All elements of the construct regmap need to have the same size"
+
         self._regmaps[identifier].regmap = spec
 
     @keyword('Register read register access function `${spec}´ from `${library}´ for `${identifier}´')
@@ -59,7 +56,7 @@ class regmap(_construct_interface_basics):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
         assert callable(spec), f"spec should be a callable, but was {type(spec)}"
-        assert identifier not in self._regmaps or self._regmaps[identifier].read_reg is None, f"not overwriting read_reg for {identifier}"
+        assert self._regmaps[identifier].read_reg is None, f"not overwriting read_reg for {identifier}"
         self._regmaps[identifier].read_reg = spec
 
     @keyword('Register write register access function `${spec}´ from `${library}´ for `${identifier}´')
@@ -67,7 +64,7 @@ class regmap(_construct_interface_basics):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
         assert callable(spec), f"spec should be a callable, but was {type(spec)}"
-        assert identifier not in self._regmaps or self._regmaps[identifier].write_reg is None, f"not overwriting write_reg for {identifier}"
+        assert self._regmaps[identifier].write_reg is None, f"not overwriting write_reg for {identifier}"
         self._regmaps[identifier].write_reg = spec
 
     @keyword('Read register `${reg}` from `${identifier}´')
@@ -75,9 +72,6 @@ class regmap(_construct_interface_basics):
         reg, relevantStruct = self._get_subcon(reg, identifier)
         regVal = self._regmaps[identifier].read_reg(reg)
         assert isinstance(regVal, bytes), f"read register should return bytes, but returned {type(regVal)}"
-        if self._regmaps[identifier].reg_size != -1:
-            assert len(regVal) == self._regmaps[identifier].reg_size, f"register size should remain constant but {self._regmaps[identifier].reg_size} and {len(regVal)} sizes where observed"
-        self._regmaps[identifier].reg_size = len(regVal)
         return relevantStruct.parse(regVal)
 
     @keyword('Write register `${reg}` in `${identifier}´ with `${data}´')
@@ -89,10 +83,7 @@ class regmap(_construct_interface_basics):
         else:
             try:
                 dataOut = relevantStruct.build(data)
-            except construct.core.ConstructError as e:
+            except (construct.core.ConstructError, KeyError, IndexError) as e:
                 assert False, f"could not build data with {relevantStruct} due to {e}"
             robot.api.logger.info(f"""built: {dataOut} using `{identifier}´ from `{data}´""")
-        if self._regmaps[identifier].reg_size != -1:
-            assert len(dataOut) == self._regmaps[identifier].reg_size, f"register size should remain constant but {self._regmaps[identifier].reg_size} and {len(dataOut)} sizes where observed"
-        self._regmaps[identifier].reg_size = len(dataOut)
         return self._regmaps[identifier].write_reg(reg, dataOut)
