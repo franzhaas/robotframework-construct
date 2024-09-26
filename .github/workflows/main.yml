@@ -30,7 +30,7 @@ jobs:
 
     - name: Run Robot Framework tests
       run: |
-        uv run robot -L TRACE -P examples/bson/ examples/bson/simple_bson.robot
-        uv run robot -L TRACE --variable bson_construct:compiled_document -P examples/bson/ examples/bson/simple_bson.robot
+        uv run robot -L TRACE -P examples/bson/ examples/bson/bson.robot
+        uv run robot -L TRACE --variable bson_construct:compiled_document -P examples/bson/ examples/bson/bson.robot
         uv run robot -L TRACE -P examples/regmapmockup/ examples/regmapmockup/regmapmockup.robot
         uv run ruff check .
