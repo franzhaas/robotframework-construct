@@ -2,7 +2,7 @@
 module-path = "src/robotframework_construct/"
 timeout = 5.0
 excluded-modules = []
-test-command = "uv run robot -L TRACE -P examples/bson/ -P examples/regmapmockup examples"
+test-command = "uv run robot -L TRACE -P atests/bson/ -P atests/regmapmockup atests"
 
 [cosmic-ray.distributor]
 name = "local"
