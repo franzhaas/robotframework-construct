@@ -1,57 +1,44 @@
-from construct import Struct, Int8ul, Int8sl, Int32sl, Int64sl, Int64ul, Float64l, Const, Array, Byte, GreedyBytes, CString, Prefixed, Switch, LazyBound, Pass, GreedyRange, Rebuild, this
+from construct import Struct, Int8ul, Int32sl, Int64sl, Int64ul, Float64l, Const, Array, Byte, GreedyBytes, CString, Prefixed, Switch, LazyBound, Pass, GreedyRange, Rebuild, this
 
-# Basic Types
-byte = Byte
-signed_byte = Int8sl
-unsigned_byte = Int8ul
-int32 = Int32sl
-int64 = Int64sl
-uint64 = Int64ul
-double = Float64l
-decimal128 = Array(16, Byte)
 
-# Non-terminals
-element = Struct(
-    "type" / signed_byte,
+_bson_element = Struct(
+    "type" / Int8ul,
     "name" / CString("utf8"),
     "value" / Switch(this.type, {
-        1: double,
-        2: Prefixed(int32, CString("utf8")),
-        3: LazyBound(lambda: document),
-        4: LazyBound(lambda: document),
-        5: Prefixed(int32, GreedyBytes),
-        6: Pass,
-        7: Array(12, Byte),
-        8: unsigned_byte,
-        9: int64,
+         1: Float64l,
+         2: Prefixed(Int32sl, CString("utf8")),
+         3: LazyBound(lambda: document),
+         4: LazyBound(lambda: document),
+         5: Prefixed(Int32sl, GreedyBytes),
+         6: Pass,
+         7: Array(12, Byte),
+         8: Int8ul,
+         9: Int64sl,
         10: Pass,
         11: Struct("pattern" / CString("utf8"), "options" / CString("utf8")),
         12: Struct("namespace" / CString("utf8"), "id" / Array(12, Byte)),
-        13: Prefixed(int32, CString("utf8")),
-        14: Prefixed(int32, CString("utf8")),
-        15: Struct("code" / Prefixed(int32, CString("utf8")), "scope" / LazyBound(lambda: document)),
-        16: int32,
-        17: uint64,
-        18: int64,
-        19: decimal128,
+        13: Prefixed(Int32sl, CString("utf8")),
+        14: Prefixed(Int32sl, CString("utf8")),
+        15: Struct("code" / Prefixed(Int32sl, CString("utf8")), "scope" / LazyBound(lambda: document)),
+        16: Int32sl,
+        17: Int64ul,
+        18: Int64sl,
+        19: Array(16, Byte),
         -1: Pass,
         127: Pass,
     })
 )
 
-e_list = GreedyRange(element)
+
+_e_list = GreedyRange(_bson_element)
+
 
 def _calc_size(this):
-    return  len(e_list.build(this["elements"]))+5
+    return  len(_e_list.build(this["elements"]))+5
+
 
 document = Struct(
-    "size" / Rebuild(int32, _calc_size),
-    "elements" / e_list,
+    "size" / Rebuild(Int32sl, _calc_size),
+    "elements" / _e_list,
     "EOO" / Const(b"\x00")
 )
-
-compiled_document = Struct(
-    "size" / int32,
-    "elements" / e_list,
-    "EOO" / Const(b"\x00")
-).compile()

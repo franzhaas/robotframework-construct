@@ -5,6 +5,8 @@ import importlib
 import re
 from robot.api.deco import keyword
 import robot.api.logger
+import socket
+import pathlib
 
 
 class _construct_interface_basics:
@@ -31,7 +33,7 @@ class _construct_interface_basics:
         except (KeyError, TypeError, IndexError):
             assert False, f"could not find `{locator}´ in `{original}´"
         return constructDict
-    
+
     def _set_element_from_constructDict(self, constructDict, locator, value):
         assert isinstance(constructDict, dict), f"constructDict should be a dict, but was `{type(constructDict)}´"
         assert isinstance(locator, str), f"locator should be a string, but was `{type(locator)}´"
@@ -53,7 +55,7 @@ class _construct_interface_basics:
         except ValueError:
             assert False, f"could not convert `{value}´ of type `{type(value)}´ to `{type(orig)}´ of the original value `{orig}´"
         setattr(constructDict, target, value)
-    
+
     @keyword('Set element seperator to `${element_seperator}´')
     def set_element_seperator(self, element_seperator: str):
         element_seperator = re.escape(element_seperator)
@@ -74,7 +76,7 @@ class _construct_interface_basics:
     @keyword('Get elemement `${locator}´ from `${constructDict}´')
     def get_construct_element(self, locator:str, constructDict:dict):
         return self._get_element_from_constructDict(constructDict, locator)
-    
+
     @keyword('Modify the elemement located at `${locator}´ of `${constructDict}´ to `${value}´')
     def set_construct_element(self, locator:str, constructDict:dict, value):
         self._set_element_from_constructDict(constructDict, locator, value)
@@ -82,7 +84,6 @@ class _construct_interface_basics:
 
 
 class robotframework_construct(_construct_interface_basics):
-
     def __init__(self):
         self.constructs = {}
         super().__init__()
@@ -95,19 +96,68 @@ class robotframework_construct(_construct_interface_basics):
         self.constructs[identifier] = spec
 
     @keyword('Parse `${binarydata}´ using construct `${identifier}´')
-    def parse_binary_data_using_construct(self, binarydata, identifier: str):
-        if not isinstance(binarydata, io.BytesIO):
-            try:
+    def parse_binary_data_using_construct(self, binarydata: bytes|io.IOBase|socket.socket, identifier: str|construct.Construct):
+        match binarydata:
+            case socket.socket() if binarydata.type == socket.SOCK_DGRAM:
+                binarydata = io.BytesIO(binarydata.recv(0x10000000))
+            case bytes():
                 binarydata = io.BytesIO(binarydata)
-            except TypeError as e:
-                assert False, f"could not convert `{binarydata}´ to io.BytesIO: `{e}´, needs to be a byte array or a readable binary file object..."
+            case io.IOBase:
+                pass
+            case _:
+                assert False, f"binarydata should be a byte array or a readable binary file object/TCP/UDP socket, but was `{type(binarydata)}´"
 
-        rVal = self.constructs[identifier].parse_stream(binarydata)
+        match identifier:
+            case str(_):
+                rVal = self.constructs[identifier].parse_stream(binarydata)
+            case construct.Construct():
+                rVal = identifier.parse_stream(binarydata)
+            case _:
+                assert False, f"identifier should be a string or a construct.Construct, but was `{type(identifier)}´"
         robot.api.logger.info(f"""parsed: {rVal} using {identifier} from {binarydata}""")
         return rVal
-    
+
     @keyword('Generate binary from `${data}´ using construct `${identifier}´')
-    def generate_binary_data_using_construct(self, data: dict, identifier: str):
-        rVal = (self.constructs[identifier].build(data))
+    def generate_binary_data_using_construct(self, data: dict, identifier: str|construct.Construct):
+        match identifier:
+            case str(_):
+                rVal = (self.constructs[identifier].build(data))
+            case construct.Construct():
+                rVal = identifier.build(data)
         robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")
         return rVal
+
+    @keyword('Open `${filepath}´ for reading binary data')
+    def open_binary_file_to_read(self, filepath: str|pathlib.Path):
+        return open(filepath, "rb")
+
+    @keyword('Open `${filepath}´ for writing binary data')
+    def open_binary_file_to_write(self, filepath: str|pathlib.Path):
+        return open(filepath, "wb")
+
+    @keyword('Open ${protocol} connection to server `${server}´ on port `${port}´')
+    def open_socket(self, protocol: str, server:str, port:int):
+        match protocol:
+            case "TCP":
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect((server, port))
+                file_like_socket = s.makefile('rb')
+                return file_like_socket
+            case "UDP":
+                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                s.connect((server, port))
+                return s
+            case _:
+                assert False, f"protocol should be either `TCP or `UDP´, but was `{protocol}´"
+
+    @keyword('Stream binary from `${data}´ using construct `${identifier}´ to `${stream}´')
+    def stream_binary_data_using_construct(self, data: dict, identifier: str|construct.Construct, stream):
+        generated = self.generate_binary_data_using_construct(data, identifier)
+        try:
+            if isinstance(stream, io.io.IOBase):
+                stream.write(generated)
+            else:
+                stream.send(generated)
+            stream.flush()
+        except (socket.error, OSError, AttributeError):
+            assert False, f"could not write to `{stream}´ of type `{type(stream)}´"

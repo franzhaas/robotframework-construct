@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Infrastructure to use construct Structs in robotframework"
 
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10.0"
 dependencies = [
     "construct>=2.10.70",
     "robotframework>=7.1",
