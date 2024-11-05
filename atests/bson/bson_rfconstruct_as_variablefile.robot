@@ -16,3 +16,5 @@ Simple positive element checks
     Elemement `elements.1.value´ in `${returnedDict}´ should not be equal to `2´
     Elemement `elements.0.value´ in `${returnedDict}´ should be equal to `you´
     Elemement `elements.0.value´ in `${returnedDict}´ should not be equal to `me´
+    ${blob2}=           Generate binary from `${returnedDict}´ using construct `${document}´
+    Should Be Equal     ${blob}    ${blob2}
