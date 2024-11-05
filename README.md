@@ -17,13 +17,13 @@ Ideally, your binary data becomes as accessible as numbers and strings are in Ro
 - Use your construct specification to:
   - Craft intentionally corrupted data.
   - Fuzz test your binary parsers.
-- Beautify access to registers, for both reading and writing.
+- Beautifuly access registers, for both reading and writing.
 
 ## Relationships in the Ecosystem
 
-The number of dependencies is kept low, with no transient dependencies. 
+The number of dependencies is kept low, with no transient dependencies.
 
-This is important as it keeps coordination feasible between two main projects. Construct is well-developed and not expected to change significantly soon. Robot Framework releases major updates annually, but these are well-managed and communicated.
+This is important as it keeps coordination feasible. Construct is well-developed and not expected to change significantly soon. Robot Framework releases major updates annually, but these are well-managed and communicated.
 
 ### Construct (https://github.com/construct/construct)
 
@@ -41,7 +41,7 @@ Robot Framework has no non-optional dependencies.
 
 Rammbock inspired this project, as it was one of the reasons I started using Robot Framework.
 
-Instead of extending Rammbock, we chose to integrate Construct.
+Instead of maintaining Rammbock, we chose to integrate Construct.
 
 #### Reasoning
 
@@ -55,7 +55,7 @@ To maintain reusability, Construct specifications must be written in `.py` files
 
 ## Quality Control Measures
 
-Examples and acceptance tests using Robot Framework are provided. Unit tests are not currently planned.
+Examples and acceptance tests using Robot Framework are provided. Unit tests are not a priority.
 
 ### Mutation Testing
 
