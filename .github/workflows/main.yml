@@ -14,24 +14,21 @@ jobs:
         python-version: ["pypy3.10", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          uv lock
+          uv sync --extra test
 
-    - name: Install dependencies
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        uv lock
-        uv sync --extra test
-
-    - name: Run Robot Framework tests
-      run: |
-        uv run robot -L TRACE -P atests/bson/ atests/bson/bson.robot
-        uv run robot -L TRACE atests/bson/bson_rfconstruct_as_variablefile.robot
-        uv run robot -L TRACE --variable bson_construct:compiled_document -P atests/bson/ atests/bson/bson.robot
-        uv run robot -L TRACE -P atests/regmapmockup/ atests/regmapmockup/regmapmockup.robot
-        uv run ruff check .
+      - name: Run Robot Framework tests
+        run: |
+          uv run robot -L TRACE -P atests/bson/ atests/bson/bson.robot
+          uv run robot -L TRACE atests/bson/bson_rfconstruct_as_variablefile.robot
+          uv run robot -L TRACE --variable bson_construct:compiled_document -P atests/bson/ atests/bson/bson.robot
+          uv run robot -L TRACE -P atests/regmapmockup/ atests/regmapmockup/regmapmockup.robot
+          uv run ruff check .
