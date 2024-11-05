@@ -4,69 +4,71 @@
 
 [Robot Framework](https://robotframework.org) library powered by [construct](https://construct.readthedocs.io/en/latest/).
 
-Declarative and symmetrical parser and builder for binary data.
+A declarative and symmetrical parser and builder for binary data.
 
-Aiming for :rocket: speed, :white_check_mark: reliability and :microscope: visibility.
+Aiming for :rocket: speed, :white_check_mark: reliability, and :microscope: visibility.
 
-Ideally your binary data gets as accessible as numbers and strings are in robot-framework
+Ideally, your binary data becomes as accessible as numbers and strings are in Robot Framework.
 
 ### Use cases
 
- - Test your production construct specificatoin against a reference implementation of the same protocol
- - Test your production binary parser / generator against a construct implementation of your binary format.
- - Use your construct specification for your binary data 
-   - to craft itentionally corrupted data
-   - fuzz test your binary parsers
- - Use your construct specification for your binary data to craft intentionally corrupted data
- - Beautifull and readable addon for accessing registers, both reading and writing.
+- Test your production construct specification against a reference implementation of the same protocol.
+- Test your production binary parser/generator against a construct implementation of your binary format.
+- Use your construct specification to:
+  - Craft intentionally corrupted data.
+  - Fuzz test your binary parsers.
+- Beautify access to registers, for both reading and writing.
 
-## Relationships in the eco system
+## Relationships in the Ecosystem
 
-The number of dependancies is kept low there are no transient dependancies.
+The number of dependencies is kept low, with no transient dependencies. 
 
-This is important as it is feasible to coordinate with just two projects. Construct is a well developed project which is not expected to massively changes soon. Robot-framework does make a major release every year, but these are well managed and comunicated.
+This is important as it keeps coordination feasible between two main projects. Construct is well-developed and not expected to change significantly soon. Robot Framework releases major updates annually, but these are well-managed and communicated.
 
-### construct (https://github.com/construct/construct)
-All the parsing and generating capabilites come from construct. There is no code added to parsing/generating, The only thing added is code to interface construct to robot-framework. The way construct Construct objects are created remains unchainged.
+### Construct (https://github.com/construct/construct)
 
-Construct has no non optional dependancies.
+All parsing and generating capabilities come from Construct. No additional parsing/generating code is added; the only code added interfaces Construct with Robot Framework. The way Construct objects are created remains unchanged.
 
-### robot-framework (https://robotframework.org/)
-This project interconnects construct with robot-framework. Only official api's are used but this project makes no sense without robot-framework
+Construct has no non-optional dependencies.
 
-Robot-framework has no non optional dependcies.
+### Robot Framework (https://robotframework.org/)
 
-### rammbock (https://github.com/MarketSquare/Rammbock)
-Rammbock is an awesome project which was one of the reasons I personally started using robotframework in the first place.
+This project connects Construct with Robot Framework. Only official APIs are used, and this project depends entirely on Robot Framework.
 
-Instead of working on rammbock the decission was made to integrate construct instead.
+Robot Framework has no non-optional dependencies.
+
+### Rammbock (https://github.com/MarketSquare/Rammbock)
+
+Rammbock inspired this project, as it was one of the reasons I started using Robot Framework.
+
+Instead of extending Rammbock, we chose to integrate Construct.
 
 #### Reasoning
-Rammbock and construct are both suffering on a shortage of engineering time, however Construct is doing better than rammbock in this department.
 
-Construct is cooperating with kaitai touching additional comunities, like C#, Cpp etc..
+Both Rammbock and Construct have limited engineering resources, but Construct is currently better supported. Construct also collaborates with Kaitai, engaging communities in C#, C++, and other ecosystems.
 
-Using construct allows to have a clear seperation between parsing/generating logic and interfacing
-code, which allows to venture out to other ecosystems.
+Using Construct provides a clear separation between parsing/generating logic and interface code, enabling expansion into other ecosystems.
 
 ## Limitations
 
-In order to maintain reusability of the construct Constructs these need to be specified in ".py" files. There are no plans to integrate the construct DSL into robotframework.
+To maintain reusability, Construct specifications must be written in `.py` files. There are no plans to integrate the Construct DSL into Robot Framework.
 
-## Quality control measures
+## Quality Control Measures
 
-Examples and acceptance tests using robotframework are created. For the time being unit tests are not planned.
+Examples and acceptance tests using Robot Framework are provided. Unit tests are not currently planned.
 
-### Mutation testing
-As this project consists only of interfacing code, it is important to catch user errors and create good error messages. Mutation testing forces to test all the code and to create all the error messages, suporting efforts to check that all possible problems yield helpfull error messages.
+### Mutation Testing
 
-## ToDo list of the project
+Since this project consists primarily of interface code, it is crucial to catch user errors and produce clear error messages. Mutation testing ensures that all code paths and error messages are tested, supporting efforts to make errors informative.
 
- - [x] parsing functionality demonstrated with an in memory BSON object
- - [ ] parsing functionality demonstrated with a file BSON object
- - [x] generating functionality demonstrated with an in memory BSON object
- - [ ] generating functionality demonstrated with a binary file
- - [x] register read/write demonstrated with a mockup register functionality
- - [ ] receive/transmit network example using for example DNS
- - [ ] Documentation, tutorials
- - [ ] Review with robotframework foundation
+## Project To-Do List
+
+- [x] Parsing functionality demonstrated with an in-memory BSON object.
+- [ ] Parsing functionality demonstrated with a BSON file.
+- [x] Generating functionality demonstrated with an in-memory BSON object.
+- [ ] Generating functionality demonstrated with a binary file.
+- [x] Register read/write demonstrated with a mockup register.
+- [ ] Receive/transmit network example using DNS.
+- [ ] Documentation and tutorials.
+- [ ] Midway review with Robot Framework Foundation.
+- [ ] Final review with Robot Framework Foundation.
