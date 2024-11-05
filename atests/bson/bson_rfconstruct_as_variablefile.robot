@@ -10,9 +10,7 @@ Variables          bson_construct.py
 Simple positive element checks
     ${my_dict}=         Create Dictionary    hey=you    number=${1}
     ${blob}=            bson.encode       ${my_dict}
-    Log To Console   ${document}
     ${returnedDict}=    Parse `${blob}´ using construct `${document}´
-    Log    ${returnedDict}
     Elemement `elements.1.value´ in `${returnedDict}´ should be equal to `1´
     Elemement `elements.1.value´ in `${returnedDict}´ should not be equal to `0´
     Elemement `elements.1.value´ in `${returnedDict}´ should not be equal to `2´
