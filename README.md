@@ -64,11 +64,12 @@ Since this project consists primarily of interface code, it is crucial to catch 
 ## Project To-Do List
 
 - [x] Parsing functionality demonstrated with an in-memory BSON object.
-- [ ] Parsing functionality demonstrated with a BSON file.
+- [x] Parsing functionality demonstrated with a BSON file.
 - [x] Generating functionality demonstrated with an in-memory BSON object.
-- [ ] Generating functionality demonstrated with a binary file.
+- [x] Generating functionality demonstrated with a binary file.
 - [x] Register read/write demonstrated with a mockup register.
 - [ ] Receive/transmit network example using DNS.
+- [ ] Upload wheel to pypi
 - [ ] Documentation and tutorials.
 - [ ] Midway review with Robot Framework Foundation.
 - [ ] Final review with Robot Framework Foundation.

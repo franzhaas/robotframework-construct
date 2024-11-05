@@ -102,7 +102,7 @@ class robotframework_construct(_construct_interface_basics):
                 binarydata = io.BytesIO(binarydata.recv(0x10000000))
             case bytes():
                 binarydata = io.BytesIO(binarydata)
-            case io.IOBase:
+            case io.IOBase():
                 pass
             case _:
                 assert False, f"binarydata should be a byte array or a readable binary file object/TCP/UDP socket, but was `{type(binarydata)}´"
@@ -127,6 +127,16 @@ class robotframework_construct(_construct_interface_basics):
         robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")
         return rVal
 
+    @keyword('Write binary data generated from `${data}´ using construct `${identifier}´ to `${file}`')
+    def write_binary_data_using_construct(self, data: dict, identifier: str|construct.Construct, file: io.IOBase):
+        match identifier:
+            case str(_):
+                rVal = (self.constructs[identifier].build(data))
+            case construct.Construct():
+                rVal = identifier.build(data)
+        robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")
+        file.write(rVal)
+
     @keyword('Open `${filepath}´ for reading binary data')
     def open_binary_file_to_read(self, filepath: str|pathlib.Path):
         return open(filepath, "rb")
@@ -149,15 +159,3 @@ class robotframework_construct(_construct_interface_basics):
                 return s
             case _:
                 assert False, f"protocol should be either `TCP or `UDP´, but was `{protocol}´"
-
-    @keyword('Stream binary from `${data}´ using construct `${identifier}´ to `${stream}´')
-    def stream_binary_data_using_construct(self, data: dict, identifier: str|construct.Construct, stream):
-        generated = self.generate_binary_data_using_construct(data, identifier)
-        try:
-            if isinstance(stream, io.io.IOBase):
-                stream.write(generated)
-            else:
-                stream.send(generated)
-            stream.flush()
-        except (socket.error, OSError, AttributeError):
-            assert False, f"could not write to `{stream}´ of type `{type(stream)}´"
