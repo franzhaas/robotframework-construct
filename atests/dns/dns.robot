@@ -14,6 +14,8 @@ basic dns request udp
     Write binary data generated from `${exampleRequestRoboconUdp}´ using construct `${dns_payload_udp}´ to `${connection}`
     ${record}=       Parse `${connection}´ using construct `${dns_payload_udp}´
     Check dns response `${record}´ against hostname `robocon.io´
+    Run keyword and expect error   could not convert `nope´ of type `<class 'str'>´ to `<class 'int'>´ of the original value `*´     Elemement `answers.0.rdata.0´ in `${record}´ should be equal to `nope´
+
     
 *** Keywords ***
 Check dns response `${record}´ against hostname `${hostname}´
@@ -27,5 +29,7 @@ Check dns response `${record}´ against hostname `${hostname}´
 
 Check dns response `${record}´ answer number `${idx}´ ip adress `${ip}´
     FOR  ${i}    IN RANGE     ${4}
-        Elemement `answers.${idx}.rdata.${i}´ in `${record}´ should be equal to `${ip}[${i}]´
+        Set element seperator to `->´
+        Elemement `answers->${idx}->rdata->${i}´ in `${record}´ should be equal to `${ip}[${i}]´
+        Set element seperator to `.´
     END

@@ -819,7 +819,7 @@ test = [
     { name = "ruff" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 dev = [
     { name = "ipython" },
     { name = "radon" },
@@ -835,11 +835,11 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'test'" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 dev = [
-    { name = "ipython" },
+    { name = "ipython", specifier = ">=8.29.0" },
     { name = "radon", specifier = ">=6.0.1" },
-    { name = "ruff" },
+    { name = "ruff", specifier = ">=0.7.2" },
 ]
 
 [[package]]
