@@ -25,7 +25,7 @@ jobs:
           uv lock
           uv sync --extra test
 
-      - name: Run Robot Framework tests
+      - name: Run cosmic-ray mutation testing
         run: |
           uv run cosmic-ray init mutation_basic.toml mutation_basic.sqlite
           uv run cosmic-ray --verbosity=INFO baseline mutation_basic.toml
@@ -33,3 +33,9 @@ jobs:
           uv run cr-html mutation_basic.sqlite > report2.html
           uv run cr-report mutation_basic.sqlite | tee report.txt
           cat report.txt | grep "surviving mutants: 0"
+      - name: Upload Robot Framework log
+        uses: actions/upload-artifact@v3
+        with:
+          name: cosmicray
+          path: report2.html
+
