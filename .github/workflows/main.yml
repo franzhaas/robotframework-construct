@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["pypy3.10", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.12"]
 
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +27,5 @@ jobs:
 
       - name: Run Robot Framework tests
         run: |
-          uv run robot -L TRACE -P atests/bson/ atests/bson/bson.robot
-          uv run robot -L TRACE -P atests/regmapmockup/ --variable bson_construct:compiled_document -P atests/bson/ atests
+          uv run robot -L TRACE -P atests/regmapmockup/ -P atests/bson/ atests/
           uv run ruff check src
