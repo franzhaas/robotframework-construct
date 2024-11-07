@@ -98,8 +98,8 @@ class robotframework_construct(_construct_interface_basics):
     @keyword('Parse `${binarydata}´ using construct `${identifier}´')
     def parse_binary_data_using_construct(self, binarydata: bytes|io.IOBase|socket.socket, identifier: str|construct.Construct):
         match binarydata:
-            case socket.socket() if binarydata.type == socket.SOCK_DGRAM:
-                binarydata = io.BytesIO(binarydata.recv(0x10000000))
+            case socket.socket():
+                binarydata = binarydata.makefile("rb")
             case bytes():
                 binarydata = io.BytesIO(binarydata)
             case io.IOBase():
@@ -135,7 +135,11 @@ class robotframework_construct(_construct_interface_basics):
             case construct.Construct():
                 rVal = identifier.build(data)
         robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")
-        file.write(rVal)
+        match file:
+            case io.IOBase():
+                file.write(rVal)
+            case socket.socket():
+                file.send(rVal)
 
     @keyword('Open `${filepath}´ for reading binary data')
     def open_binary_file_to_read(self, filepath: str|pathlib.Path):
@@ -151,8 +155,7 @@ class robotframework_construct(_construct_interface_basics):
             case "TCP":
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect((server, port))
-                file_like_socket = s.makefile('rb')
-                return file_like_socket
+                return s
             case "UDP":
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.connect((server, port))
