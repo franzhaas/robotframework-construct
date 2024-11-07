@@ -112,8 +112,11 @@ class robotframework_construct(_construct_interface_basics):
                 assert False, f"binarydata should be a byte array or a readable binary file object/TCP/UDP socket, but was `{type(binarydata)}´"
 
         match identifier:
-            case str(_):
-                rVal = self.constructs[identifier].parse_stream(binarydata)
+            case str():
+                try:
+                    rVal = self.constructs[identifier].parse_stream(binarydata)
+                except KeyError:
+                    assert False, f"could not find construct `{identifier}´"
             case construct.Construct():
                 rVal = identifier.parse_stream(binarydata)
             case _:

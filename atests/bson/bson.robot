@@ -42,6 +42,13 @@ simple negative tests
     ${my_dict}=         Create Dictionary    hey=you    number=${1}
     ${blob}=            bson.encode       ${my_dict}
     ${returnedDict}=         Parse `${blob}´ using construct `bson_document´
+
+    Run keyword and expect error       could not find construct `0´                                      Parse `${blob}´ using construct `${0}´
+
+    Run keyword and expect error       observed value `1´ does not match expected `0´ in `Container:*    Elemement `elements.1.value´ in `${returnedDict}´ should be equal to `0´
+    Run keyword and expect error       observed value `1´ does not match expected `2´ in `Container:*    Elemement `elements.1.value´ in `${returnedDict}´ should be equal to `2´
+
+
     Run keyword and expect error       could not find `elements.1.nope´ in `Container:*´                                               Elemement `elements.1.nope´ in `${returnedDict}´ should be equal to `1´
     Run keyword and expect error       locator `elements.nope.value´ invalid for `Container:*´                                         Elemement `elements.nope.value´ in `${returnedDict}´ should be equal to `1´
     Run keyword and expect error       locator `elements.-1.value´ invalid for `Container:*´                                           Elemement `elements.-1.value´ in `${returnedDict}´ should be equal to `1´
