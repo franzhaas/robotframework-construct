@@ -29,3 +29,9 @@ jobs:
         run: |
           uv run robot -L TRACE -P atests/regmapmockup/ -P atests/bson/ atests/
           uv run ruff check src
+
+      - name: Upload Robot Framework log
+        uses: actions/upload-artifact@v3
+        with:
+          name: robot-log
+          path: log.html
