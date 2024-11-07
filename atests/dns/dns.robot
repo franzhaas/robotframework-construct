@@ -16,6 +16,8 @@ basic dns request udp
     Check dns response `${record}´ against hostname `robocon.io´
     Run keyword and expect error   could not convert `nope´ of type `<class 'str'>´ to `<class 'int'>´ of the original value `*´     Elemement `answers.0.rdata.0´ in `${record}´ should be equal to `nope´
 
+basic negative tests
+    Run keyword and expect error   protocol should be either `TCP or `UDP´, but was `raw´   Open raw connection to server `1.1.1.1´ on port `53´
     
 *** Keywords ***
 Check dns response `${record}´ against hostname `${hostname}´

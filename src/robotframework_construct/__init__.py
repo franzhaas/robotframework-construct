@@ -26,10 +26,7 @@ class _construct_interface_basics:
         original = constructDict
         try:
             for item in self._split_at_dot_escape_with_dotdot.split(locator):
-                if isinstance(constructDict, list):
-                    constructDict = constructDict[int(item)]
-                else:
-                    constructDict = constructDict[item]
+                constructDict = self.traverse_construct_for_element(constructDict, locator, original, item)
         except (KeyError, TypeError, IndexError):
             assert False, f"could not find `{locator}´ in `{original}´"
         return constructDict
@@ -43,18 +40,25 @@ class _construct_interface_basics:
             target = element_chain[-1]
             element_chain = element_chain[:-1]
             for item in element_chain:
-                if isinstance(constructDict, list):
-                    constructDict = constructDict[int(item)]
-                else:
-                    constructDict = constructDict[item]
+                constructDict = self.traverse_construct_for_element(constructDict, locator, original, item)
             orig = getattr(constructDict, target)
-        except (KeyError, AttributeError, IndexError):
+        except (AttributeError, KeyError):
             assert False, f"could not find `{locator}´ in `{original}´"
         try:
             value = type(orig)(value)
         except ValueError:
             assert False, f"could not convert `{value}´ of type `{type(value)}´ to `{type(orig)}´ of the original value `{orig}´"
         setattr(constructDict, target, value)
+
+    def traverse_construct_for_element(self, constructDict, locator, original, item):
+        match (item, constructDict,):
+            case (str(), dict(),):
+                constructDict = constructDict[item]
+            case (str(y), list(),) if all(x.isdigit() for x in y):  
+                constructDict = constructDict[int(item)]
+            case _:
+                assert False, f"locator `{locator}´ invalid for `{original}´"
+        return constructDict
 
     @keyword('Set element seperator to `${element_seperator}´')
     def set_element_seperator(self, element_seperator: str):
