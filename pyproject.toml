@@ -1,6 +1,6 @@
 [project]
 name = "robotframework-construct"
-version = "0.1.1"
+version = "0.1.0"
 description = "Infrastructure to use construct Structs in robotframework"
 
 readme = "README.md"

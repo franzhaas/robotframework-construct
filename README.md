@@ -68,7 +68,7 @@ Since this project consists primarily of interface code, it is crucial to catch 
 - [x] Generating functionality demonstrated with an in-memory BSON object.
 - [x] Generating functionality demonstrated with a binary file.
 - [x] Register read/write demonstrated with a mockup register.
-- [ ] Receive/transmit network example using DNS.
+- [x] Receive/transmit network example using DNS.
 - [ ] Reflector tool to allow to implement servers using clients.
 - [ ] Upload wheel to pypi.
 - [ ] Documentation and tutorials.
