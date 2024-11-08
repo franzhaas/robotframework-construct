@@ -164,8 +164,12 @@ wheels = [
 
 [[package]]
 name = "construct"
-version = "2.10.70"
-source = { git = "https://github.com/franzhaas/construct.git?rev=issue_1082#499d17f5d11ef96dae0a72ed51b0592aa7ddf684" }
+version = "2.10.69"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/02/88/e34d7265863f3c96077aea24041b067d4646d77d596d979110eb94758b03/construct-2.10.69.tar.gz", hash = "sha256:08573d1573827a6fe6b846756d54270650e221a6cec6a72e06b582cde775599e", size = 61190 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3d/ca/36191d582a2db51c079094439fc7fca305c9082b95549f3e351b3c9e299e/construct-2.10.69-py3-none-any.whl", hash = "sha256:6b8d0ee239e1cc933829b3573df7c9d9d9554344d82f6281c11a913e2be95cb3", size = 62472 },
+]
 
 [[package]]
 name = "cosmic-ray"
@@ -860,7 +864,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "construct", git = "https://github.com/franzhaas/construct.git?rev=issue_1082" },
+    { name = "construct", specifier = "==2.10.69" },
     { name = "cosmic-ray", marker = "extra == 'test'", specifier = ">=8.3.15" },
     { name = "pymongo", marker = "extra == 'test'", specifier = ">=4.9.1" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.3.3" },
