@@ -15,6 +15,10 @@ dependencies = [
 license = { text = "Apache-2.0" }
 keywords = ["robotframework"]
 
+[project.urls]
+Documentation = "https://marketsquare.github.io/robotframework-construct"
+Repository = "https://github.com/MarketSquare/robotframework-construct"
+
 [project.optional-dependencies]
 test = [
     "cosmic-ray>=8.3.15",

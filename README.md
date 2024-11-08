@@ -70,7 +70,7 @@ Since this project consists primarily of interface code, it is crucial to catch 
 - [x] Register read/write demonstrated with a mockup register.
 - [x] Receive/transmit network example using DNS.
 - [ ] Reflector tool to allow to implement servers using clients.
-- [ ] Upload wheel to pypi.
+- [x] Upload wheel to pypi.
 - [ ] Documentation and tutorials.
 - [ ] Midway review with Robot Framework Foundation.
 - [ ] Final review with Robot Framework Foundation.
