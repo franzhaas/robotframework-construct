@@ -7,6 +7,12 @@ from robot.api.deco import keyword
 import robot.api.logger
 import socket
 import pathlib
+import enum
+
+
+class Protocol(enum.Enum):
+    TCP = enum.auto()
+    UDP = enum.auto()
 
 
 class _construct_interface_basics:
@@ -264,7 +270,7 @@ class robotframework_construct(_construct_interface_basics):
         return open(filepath, "wb")
 
     @keyword('Open ${protocol} connection to server `${server}´ on port `${port}´')
-    def open_socket(self, protocol: str, server:str, port:int):
+    def open_socket(self, protocol: Protocol, server:str, port:int):
         """Opens a connection to the server server on port port using protocol.
 
         Arguments:
@@ -274,11 +280,11 @@ class robotframework_construct(_construct_interface_basics):
         | port        | The port to connect to |
         """
         match protocol:
-            case "TCP":
+            case Protocol.TCP:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect((server, port))
                 return s
-            case "UDP":
+            case Protocol.UDP:
                 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 s.connect((server, port))
                 return s
