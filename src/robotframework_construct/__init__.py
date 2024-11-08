@@ -128,7 +128,7 @@ class robotframework_construct(_construct_interface_basics):
     def generate_binary_data_using_construct(self, data: dict, identifier: str|construct.Construct):
         match identifier:
             case str(_):
-                rVal = (self.constructs[identifier].build(data))
+                rVal = self.constructs[identifier].build(data)
             case construct.Construct():
                 rVal = identifier.build(data)
         robot.api.logger.info(f"""built: {rVal} using `{identifier}´ from `{data}´""")
