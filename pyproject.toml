@@ -2,6 +2,9 @@
 name = "robotframework-construct"
 version = "0.1.0"
 description = "Infrastructure to use construct Structs in robotframework"
+authors = [
+    {name = "Franz Haas", email = "franz.dominik.haas@gmail.com"},
+]
 
 readme = "README.md"
 requires-python = ">=3.10.0"
@@ -10,6 +13,7 @@ dependencies = [
     "construct"
 ]
 license = { text = "Apache-2.0" }
+keywords = ["robotframework"]
 
 [project.optional-dependencies]
 test = [
