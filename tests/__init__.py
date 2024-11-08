@@ -3,8 +3,9 @@ import pytest
 
 
 def test_impossible_params():
-    with pytest.raises(AssertionError):
+    with pytest.raises(AssertionError) as excinfo:
         robotframework_construct.robotframework_construct().traverse_construct_for_element(0, 0, 0, 0)
+    assert "locator `0´ invalid for `0´" == str(excinfo.value)
     
     with pytest.raises(AssertionError) as excinfo:
         robotframework_construct.robotframework_construct().parse_binary_data_using_construct(None, "nope")
