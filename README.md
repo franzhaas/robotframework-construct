@@ -76,7 +76,8 @@ Since this project consists primarily of interface code, it is crucial to catch 
 - [ ] Increase test coverage (Mutant killing) of the reflector
 - [ ] Segmentise mutation testing to speedup
 - [ ] Add real world example with binary interface to Readme
-- [x] Have libdoc documentation online for all keywords
+- [x] Have libdoc documentation online
+- [ ] Have libdoc documentation online for all keywords, not only the central ones
 - [ ] User guide and tutorials.
 - [ ] Example on how to breakout of the python ecosystem
 - [ ] Midway review with Robot Framework Foundation.
