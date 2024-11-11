@@ -74,6 +74,7 @@ Since this project consists primarily of interface code, it is crucial to catch 
 - [x] Reflector tool to allow to implement servers using clients.
 - [x] Upload wheel to pypi.
 - [ ] Increase test coverage (Mutant killing) of the reflector
+- [ ] Segmentise mutation testing to speedup
 - [ ] Add real world example with binary interface to Readme
 - [x] Have libdoc documentation online for all keywords
 - [ ] User guide and tutorials.
