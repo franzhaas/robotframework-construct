@@ -4,6 +4,7 @@ Documentation      This is a simple example for a robot file using robotframewor
 ...                uv run robot -P examples/bson/ examples/bson/simple_bson.robot
 Library            bson            
 Library            robotframework_construct
+Test Tags          mutation_base
 *** Test Cases ***
     
 Simple positive element checks
@@ -22,6 +23,11 @@ Simple positive element checks
     Elemement `elements.1.value´ in `${returnedDict}´ should be equal to `3´
     Elemement `elements.1.value´ in `${returnedDict}´ should not be equal to `2´
     Elemement `elements.1.value´ in `${returnedDict}´ should not be equal to `4´
+    Set element seperator to `->´
+    Elemement `elements->1->value´ in `${returnedDict}´ should be equal to `3´
+    Elemement `elements->1->value´ in `${returnedDict}´ should not be equal to `2´
+    Elemement `elements->1->value´ in `${returnedDict}´ should not be equal to `4´
+    Set element seperator to `.´
 
 simple positive element checks using a file
     Register construct `document´ from `bson_construct´ as `bson_document´

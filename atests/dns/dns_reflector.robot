@@ -3,6 +3,7 @@ Documentation      This is a simple example for a robot file using robotframewor
 Variables          dns_construct.py
 Library            robotframework_construct
 Library            robotframework_construct.reflector
+Test Tags          mutation_reflector
 *** Test Cases ***
 basic dns request tcp
     ${PORT1}    ${PORT2}=      Reflect traffic between ports using `TCP´
@@ -15,6 +16,7 @@ basic dns request tcp
     Shutdown Reflector
 
 basic dns request udp
+    [Tags]    mutation_base
     ${PORT1}    ${PORT2}=      Reflect traffic between ports using `UDP´
     ${connection1}=   Open UDP connection to server `127.0.0.1´ on port `${PORT1}´
     ${connection2}=   Open UDP connection to server `127.0.0.1´ on port `${PORT2}´
