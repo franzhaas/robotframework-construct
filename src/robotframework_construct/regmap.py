@@ -115,7 +115,7 @@ class regmap(_construct_interface_basics):
         return relevantStruct.parse(regVal)
 
     @keyword('Write register `${reg}` in `${identifier}´ with `${data}´')
-    def write_register(self, reg, identifier: str, data: [bytes, dict, construct.Struct]):
+    def write_register(self, reg, identifier: str, data):
         """Writes a register using the registered write function of a registered regmap
 
         Arguments:
