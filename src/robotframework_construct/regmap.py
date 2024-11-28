@@ -35,11 +35,11 @@ class regmap(_construct_interface_basics):
                 assert False, f"could not find register {reg} in regmap {identifier}, register out of bound"
         return reg,relevantStruct
 
-    @keyword('Remove register map `${identifier}´')
+    @keyword("Remove register map '${identifier}'")
     def remove_register_map(self, identifier: str):
         del self._regmaps[identifier]
 
-    @keyword('Register regmap `${spec}´ from `${library}´ for `${identifier}´')
+    @keyword("Register regmap '${spec}' from '${library}' for '${identifier}'")
     def register_regmap(self, spec: str, library: str, identifier: str):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
@@ -52,7 +52,7 @@ class regmap(_construct_interface_basics):
 
         self._regmaps[identifier].regmap = spec
 
-    @keyword('Register read register access function `${spec}´ from `${library}´ for `${identifier}´')
+    @keyword("Register read register access function '${spec}' from '${library}' for '${identifier}'")
     def register_read_register_access_function(self, spec: str, library: str, identifier: str):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
@@ -60,7 +60,7 @@ class regmap(_construct_interface_basics):
         assert self._regmaps[identifier].read_reg is None, f"not overwriting read_reg for {identifier}"
         self._regmaps[identifier].read_reg = spec
 
-    @keyword('Register write register access function `${spec}´ from `${library}´ for `${identifier}´')
+    @keyword("Register write register access function '${spec}' from '${library}' for '${identifier}'")
     def register_write_register_access_function(self, spec: str, library: str, identifier: str):
         lib = importlib.import_module(library)
         spec = getattr(lib, spec)
@@ -68,23 +68,23 @@ class regmap(_construct_interface_basics):
         assert self._regmaps[identifier].write_reg is None, f"not overwriting write_reg for {identifier}"
         self._regmaps[identifier].write_reg = spec
 
-    @keyword('Read register `${reg}` from `${identifier}´')
+    @keyword("Read register '${reg}' from '${identifier}'")
     def read_register(self, reg, identifier: str):
         reg, relevantStruct = self._get_subcon(reg, identifier)
         regVal = self._regmaps[identifier].read_reg(reg)
         assert isinstance(regVal, bytes), f"read register should return bytes, but returned {type(regVal)}"
         return relevantStruct.parse(regVal)
 
-    @keyword('Write register `${reg}` in `${identifier}´ with `${data}´')
+    @keyword("Write register '${reg}' in '${identifier}' with '${data}'")
     def write_register(self, reg: typing.Any, identifier: str, data: typing.Union[bytes, dict, construct.Struct]):
         reg, relevantStruct = self._get_subcon(reg, identifier)
         if isinstance(data, bytes):
             dataOut = data
-            robot.api.logger.info(f"""writing: {dataOut!r} using `{identifier}´ from `{data!r}´ unmodified""")
+            robot.api.logger.info(f"""writing: {dataOut!r} using '{identifier}' from '{data!r}' unmodified""")
         else:
             try:
                 dataOut = relevantStruct.build(data)
             except (construct.core.ConstructError, KeyError, IndexError) as e:
                 assert False, f"could not build data with {relevantStruct} due to {e}"
-            robot.api.logger.info(f"""built: {dataOut!r} using `{identifier}´ from `{data!r}´""")
+            robot.api.logger.info(f"""built: {dataOut!r} using '{identifier}' from '{data!r}'""")
         return self._regmaps[identifier].write_reg(reg, dataOut)
