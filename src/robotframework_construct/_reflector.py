@@ -1,4 +1,3 @@
-from robotframework_construct import Protocol, _port_mapping
 import socket
 import select
 import threading
@@ -6,6 +5,13 @@ from robot.api.deco import keyword
 import robot.api.logger
 import queue
 import typing
+import enum
+
+_port_mapping = {}
+
+class Protocol(enum.Enum):
+    TCP = "TCP"
+    UDP = "UDP"
 
 
 def _reflect(protocol: Protocol, coms: threading.Event, portQ: queue.Queue) -> None:

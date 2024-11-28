@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation      This is a simple example for a robot file using robotframework-construct demonstrating the regmap feature
-Library            robotframework_construct.regmap
+Library            robotframework_construct
 Test Setup         prepare regmaps
 Test Tags          mutation_regmap
 *** Test Cases ***
