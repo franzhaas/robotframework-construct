@@ -1,5 +1,5 @@
 [cosmic-ray]
-module-path = "src/robotframework_construct/reflector.py"
+module-path = "src/robotframework_construct/_reflector.py"
 timeout = 7.5
 excluded-modules = []
 test-command = "uv run robot -L TRACE --exitonfailure -P atests/bson/ -i mutation_reflector atests"
