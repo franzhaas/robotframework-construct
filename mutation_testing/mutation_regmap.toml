@@ -1,5 +1,5 @@
 [cosmic-ray]
-module-path = "src/robotframework_construct/regmap.py"
+module-path = "src/robotframework_construct/_regmap.py"
 timeout = 7.5
 excluded-modules = []
 test-command = "uv run robot --exitonfailure -P atests/regmapmockup/ atests/regmapmockup/"
