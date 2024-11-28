@@ -13,7 +13,7 @@ for item in version:
 
 version = ".".join(version)
 
-uv run libdoc f"--version={version}" src/robotframework_construct  docs/index.html
+uv run --no-sync libdoc f"--version={version}" src/robotframework_construct  docs/index.html
 cp docs/index.html f"docs/robotframework_construct_{version}.html"
 git add docs/index.html f"docs/robotframework_construct_{version}.html"
 git commit -m f"release {version}"
