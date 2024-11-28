@@ -1,7 +1,8 @@
 import os
 
+git checkout uv.lock
 git_status = (str(!(git status)).split(os.linesep))
-assert "nothing to commit, working tree clean" in git_status[1], f"please commit all changes before releasing (nothing to commit) {git_status[1]}"
+assert "nothing to commit, working tree clean" in git_status, f"please commit all changes before releasing (nothing to commit)"
 
 version= input("which version to release?\n")
 
@@ -19,4 +20,4 @@ git commit -m f"release {version}"
 git tag f"v{version}" -m "release {version} release process"
 uv build
 uv publish
-git push
+git push --tags
