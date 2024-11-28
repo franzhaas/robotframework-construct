@@ -30,9 +30,9 @@ Example Test Case
     Write register '0' in 'dsp' with '${{ {"add": 0, "sub": 0, "mul": 0, "div": 1} }}'
     Read register '3' from 'dsp'
     ${reg0}=      Read register '0' from 'dsp'
-    Get elemement 'div' from '${reg0}'
-    ${reg0}=      Modify the elemement located at 'div' of '${reg0}' to '${0}'
-    ${reg0}=      Modify the elemement located at 'add' of '${reg0}' to '1'
+    Get element 'div' from '${reg0}'
+    ${reg0}=      Modify the element located at 'div' of '${reg0}' to '${0}'
+    ${reg0}=      Modify the element located at 'add' of '${reg0}' to '1'
     Write register '0' in 'dsp' with '${reg0}'
     Read register '3' from 'dsp'
 

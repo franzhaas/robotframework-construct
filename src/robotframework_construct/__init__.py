@@ -84,7 +84,7 @@ class _construct_interface_basics:
         element_seperator = re.escape(element_seperator)
         self._split_at_dot_escape_with_dotdot = re.compile(rf"(?<!{element_seperator}){element_seperator}(?!{element_seperator})")
 
-    @keyword("Elemement '${locator}' in '${constructDict}' should be equal to '${expectedValue}'")
+    @keyword("Element '${locator}' in '${constructDict}' should be equal to '${expectedValue}'")
     def construct_element_should_be_equal(self, locator:str, constructDict: typing.Union[dict, construct.Struct], expectedValue) -> None:
         """Checks that the element located at locator in construct is equal to expectedValue.
 
@@ -100,7 +100,7 @@ class _construct_interface_basics:
         expectedValue = self._convert_to_current_type(expectedValue, element)
         assert element == expectedValue, f"observed value '{str(element)}' does not match expected '{expectedValue}' in '{str(constructDict)}' at '{locator}'"
 
-    @keyword("Elemement '${locator}' in '${constructDict}' should not be equal to '${expectedValue}'")
+    @keyword("Element '${locator}' in '${constructDict}' should not be equal to '${expectedValue}'")
     def construct_element_should_not_be_equal(self, locator:str, constructDict: typing.Union[dict, construct.Struct], expectedValue) -> None:
         """Checks that the element located at locator in construct is _not_ equal to expectedValue.
 
@@ -116,7 +116,7 @@ class _construct_interface_basics:
         expectedValue = self._convert_to_current_type(expectedValue, element)
         assert element != expectedValue, f"observed value '{str(element)}' is not distinct to '{expectedValue}' in '{str(constructDict)}' at '{locator}'"
 
-    @keyword("Get elemement '${locator}' from '${constructDict}'")
+    @keyword("Get element '${locator}' from '${constructDict}'")
     def get_construct_element(self, locator:str, constructDict: typing.Union[dict, construct.Struct]) -> typing.Union[dict, construct.Struct]:
         """Retreives the element located at locator in constructDict.
 
@@ -129,7 +129,7 @@ class _construct_interface_basics:
         """
         return self._get_element_from_constructDict(constructDict, locator)
 
-    @keyword("Modify the elemement located at '${locator}' of '${constructDict}' to '${value}'")
+    @keyword("Modify the element located at '${locator}' of '${constructDict}' to '${value}'")
     def set_construct_element(self, locator:str, constructDict: typing.Union[dict, construct.Struct], value) -> typing.Union[dict, construct.Struct]:
         """Modifies the element located at locator in constructDict to the value value.
 

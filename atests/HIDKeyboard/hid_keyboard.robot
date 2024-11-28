@@ -13,21 +13,21 @@ Test USB HID keyboard
     Log to console         ${EMPTY}
     Log to console         Press left alt and hold please
     ${LeftAltPressed}=            Parse '${IFILE}' using construct '${HIDReportIn}'
-    Elemement 'modifiers.left_alt' in '${LeftAltPressed}' should be equal to '${True}'
+    Element 'modifiers.left_alt' in '${LeftAltPressed}' should be equal to '${True}'
     Log to console         Press and hold right shift please
     ${LeftAltPressed}=            Parse '${IFILE}' using construct '${HIDReportIn}'
-    Elemement 'modifiers.right_shift' in '${LeftAltPressed}' should be equal to '${True}'
+    Element 'modifiers.right_shift' in '${LeftAltPressed}' should be equal to '${True}'
     Write binary data generated from '${HIDReportOutEmpty}' using construct '${HIDReportOut}' to '${OFILE}'
     Call Method   ${OFILE}   flush
     Log To Console         The three leds should be off now
     Sleep     1
-    Modify the elemement located at 'modifiers.SCROLL_LOCK' of '${HIDReportOutEmpty}' to '${True}'
+    Modify the element located at 'modifiers.SCROLL_LOCK' of '${HIDReportOutEmpty}' to '${True}'
     Write binary data generated from '${HIDReportOutEmpty}' using construct '${HIDReportOut}' to '${OFILE}'
     Call Method   ${OFILE}   flush
     Log To Console         The scroll lock led should be on now
     Sleep     1
-    Modify the elemement located at 'modifiers.SCROLL_LOCK' of '${HIDReportOutEmpty}' to '${False}'
-    Modify the elemement located at 'modifiers.CAPS_LOCK' of '${HIDReportOutEmpty}' to '${True}'
+    Modify the element located at 'modifiers.SCROLL_LOCK' of '${HIDReportOutEmpty}' to '${False}'
+    Modify the element located at 'modifiers.CAPS_LOCK' of '${HIDReportOutEmpty}' to '${True}'
     Write binary data generated from '${HIDReportOutEmpty}' using construct '${HIDReportOut}' to '${OFILE}'
     Call Method   ${OFILE}   flush
     Log To Console         The caps lock led should be on now

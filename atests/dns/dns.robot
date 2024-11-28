@@ -16,11 +16,11 @@ basic dns request udp
     Write binary data generated from '${exampleRequestRoboconUdp}' using construct '${dns_payload_udp}' to '${connection}'
     ${record}=       Parse '${connection}' using construct '${dns_payload_udp}'
     Check dns response '${record}' against hostname 'robocon.io'
-    Run keyword and expect error   could not convert 'nope' of type '<class 'str'>' to '<class 'int'>' of the original value '*'     Elemement 'answers.0.rdata.0' in '${record}' should be equal to 'nope'
+    Run keyword and expect error   could not convert 'nope' of type '<class 'str'>' to '<class 'int'>' of the original value '*'     Element 'answers.0.rdata.0' in '${record}' should be equal to 'nope'
     
 *** Keywords ***
 Check dns response '${record}' against hostname '${hostname}'
-    ${NrResponses}=         Get elemement 'ancount' from '${record}'
+    ${NrResponses}=         Get element 'ancount' from '${record}'
     ${ip}=                  Evaluate    [int(item) for item in socket.gethostbyname('${hostname}').split(".")]    modules=socket
     FOR   ${idx}    IN RANGE    ${NrResponses}
         ${passed}=          Run Keyword And Return Status	Check dns response '${record}' answer number '${idx}' ip adress '${ip}'
@@ -32,6 +32,6 @@ Check dns response '${record}' against hostname '${hostname}'
 Check dns response '${record}' answer number '${idx}' ip adress '${ip}'
     FOR  ${i}    IN RANGE     ${4}
         Set element seperator to '->'
-        Elemement 'answers->${idx}->rdata->${i}' in '${record}' should be equal to '${ip}[${i}]'
+        Element 'answers->${idx}->rdata->${i}' in '${record}' should be equal to '${ip}[${i}]'
         Set element seperator to '.'
     END
