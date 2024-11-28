@@ -58,17 +58,17 @@ class reflector:
         self._port2 = None
         self._protocol = None
 
-    @keyword("Reflect traffic between ports using `${protocol}´")
+    @keyword("Reflect traffic between ports using '${protocol}'")
     def reflector(self, protocol: Protocol) -> typing.Tuple[int, int]:
         """Reflects data between two ports.
 
-        `port1` is the port to listen to and `port2` is the port to reflect data to.
-        `protocol` can be either `TCP` or `UDP`.
+        'port1' is the port to listen to and 'port2' is the port to reflect data to.
+        'protocol' can be either 'TCP' or 'UDP'.
 
         Only exactly one connection is allowed per port. No reconnects, No multiple connections.
 
         Example:
-        Reflect traffic between ports `9090´ and `9191´ using `TCP´"
+        Reflect traffic between ports '9090' and '9191' using 'TCP'"
         """
         assert self._thread is None, "Reflector is already running"
         portQ: queue.Queue[typing.Tuple[int, int]]  = queue.Queue()
