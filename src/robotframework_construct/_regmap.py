@@ -3,7 +3,6 @@ import robot.api.logger
 import importlib
 import construct
 import collections
-from robotframework_construct import _construct_interface_basics
 import typing
 
 
@@ -13,7 +12,7 @@ class _regmap_entry:
     write_reg: typing.Union[None, typing.Callable] = None
 
 
-class regmap(_construct_interface_basics):
+class regmap():
 
     def __init__(self):
         self._regmaps = collections.defaultdict(_regmap_entry)

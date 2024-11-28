@@ -7,22 +7,34 @@ from robot.api.deco import keyword
 import robot.api.logger
 import socket
 import pathlib
-import enum
 import typing
+from robotframework_construct._regmap import regmap
+from robotframework_construct._reflector import reflector, Protocol, _port_mapping
 
-
-_port_mapping = {}
 
 _U = typing.TypeVar("_U")
 
 
-class Protocol(enum.Enum):
-    TCP = "TCP"
-    UDP = "UDP"
+class robotframework_construct(regmap, reflector):
+    """Library for parsing and generating binary data beatifuly using the 'construct' library.
 
+    This is the keyword documentation for robotframework-construct library. For information
+    about installation, support, and more please visit the
+    [https://github.com/MarketSquare/robotframework-construct].
+    For more information about Robot Framework itself, see [https://robotframework.org|robotframework.org].
 
-class _construct_interface_basics:
-    def __init__(self, element_seperator: str =r".") -> None:
+    robotframework-construct uses [https://construct.readthedocs.io/en/latest/|construct] to parse and generate binary data.
+
+    Use cases
+
+    - Register map access and visualization
+    - I2C/SPI/UART/CAN communication
+    - Binary network protocol (TCP/UDP), binary file, and memory object handling
+
+    """
+    def __init__(self, element_seperator: str =r"."):
+        self.constructs = {}
+        super().__init__()
         self.set_element_seperator(element_seperator)
 
     def _convert_to_current_type(self, expectedValue: _U, element: typing.Any) -> _U:
@@ -143,28 +155,6 @@ class _construct_interface_basics:
         """
         self._set_element_from_constructDict(constructDict, locator, value)
         return constructDict
-
-
-class robotframework_construct(_construct_interface_basics):
-    """Library for parsing and generating binary data beatifuly using the 'construct' library.
-
-    This is the keyword documentation for robotframework-construct library. For information
-    about installation, support, and more please visit the
-    [https://github.com/MarketSquare/robotframework-construct].
-    For more information about Robot Framework itself, see [https://robotframework.org|robotframework.org].
-
-    robotframework-construct uses [https://construct.readthedocs.io/en/latest/|construct] to parse and generate binary data.
-
-    Use cases
-
-    - Register map access and visualization
-    - I2C/SPI/UART/CAN communication
-    - Binary network protocol (TCP/UDP), binary file, and memory object handling
-
-    """
-    def __init__(self):
-        self.constructs = {}
-        super().__init__()
 
     @keyword("Register construct '${spec}' from '${library}' as '${identifier}'")
     def register_construct(self, spec: str, library: str, identifier: str) -> None:
