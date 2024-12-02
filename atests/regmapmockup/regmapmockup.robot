@@ -4,7 +4,7 @@ Library            robotframework_construct
 Test Setup         prepare regmaps
 Test Tags          mutation_regmap
 *** Test Cases ***
-Example with a simulated math coprocessor
+Example using a simulated math coprocessor
     Write register 'operand1' in 'dsp' with '${42}'
     Write register 'operand2' in 'dsp' with '${21}'
     Write register '0' in 'dsp' with '${{ {"add": 1, "sub": 0, "mul": 0, "div": 0} }}'
@@ -27,7 +27,7 @@ Example with a simulated math coprocessor
     ${RESULT}=     Read register '3' from 'dsp'
     Should Be Equal As Integers    ${RESULT}    63
 
-remove and reload check
+example of how to remove a regmap which allows to load a newone with the same name
     Remove register map 'dsp'
     Register regmap 'math_coprocessor_map' from 'math_coprocessor_regmap' for 'dsp'
 

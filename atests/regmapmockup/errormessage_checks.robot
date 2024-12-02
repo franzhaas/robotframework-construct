@@ -1,5 +1,7 @@
 *** Settings ***
-Documentation      This is a simple example for a robot file using robotframework-construct demonstrating the regmap feature
+Documentation      This are tests checking for sensible error messages. 
+...    
+...    This is usefull for quality controll and for trouble shooting. These examples might help to understand the error messages.
 Library            robotframework_construct
 Test Setup         prepare regmaps
 Test Tags          mutation_regmap

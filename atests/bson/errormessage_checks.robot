@@ -1,5 +1,7 @@
 *** Settings ***
-Documentation      These are negative tests used for quality control, barely suitable as examples. 
+Documentation      This are tests checking for sensible error messages. 
+...    
+...    This is usefull for quality controll and for trouble shooting. These examples might help to understand the error messages.
 Library            bson            
 Library            robotframework_construct
 Test Tags         mutation_base

@@ -1,7 +1,5 @@
 *** Settings ***
-Documentation      This is a simple example for a robot file using robotframework-construct using bson as an example. 
-...                To run it use.:
-...                uv run robot -P examples/bson/ examples/bson/simple_bson.robot
+Documentation      This is a simple example for a robot file using robotframework-construct using the bson file format as an example, loading the constructs from a python module.
 Library            bson            
 Library            robotframework_construct
 Test Tags          mutation_base

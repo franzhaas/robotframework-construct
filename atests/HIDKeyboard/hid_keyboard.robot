@@ -1,5 +1,8 @@
 *** Settings ***
-Documentation        This is a simple example for a robot file using robotframework-construct demonstrating accessing real HW (a usb keyboard on linux)
+Documentation        This is a simple example for a robot file using robotframework-construct demonstrating accessing real HW over the USB HID interface.
+...    
+...    This currently only works on linux
+
 Library              robotframework_construct
 Library              Dialogs
 Variables            hid_keyboard.py
