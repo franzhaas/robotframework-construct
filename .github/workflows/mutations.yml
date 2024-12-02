@@ -26,7 +26,7 @@ jobs:
   
       - name: Run mutation tests
         run: |
-          uvx xonsh tasks/mutation_testing.sh
+          uvx xonsh tasks/mutationtests.sh
       
       - name: Upload cosmic ray log
         uses: actions/upload-artifact@v3
