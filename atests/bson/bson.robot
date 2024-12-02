@@ -42,7 +42,7 @@ simple bson example changint the seperator
     Element 'elements->1->value' in '${returnedDict}' should be equal to '1'
     Set element seperator to '.'
 
-simple bson example using a file
+simple bson example using a file with buffering
     Register construct 'document' from 'bson_construct' as 'bson_document'
     ${my_dict}=         Create Dictionary    hey=you    number=${1}
     ${blob}=            bson.encode       ${my_dict}
@@ -51,6 +51,19 @@ simple bson example using a file
     ${OFILE}=           Open 'temp_binary.blob' for writing binary data
     Write binary data generated from '${my_dict}' using construct 'bson_document' to '${OFILE}'
     Call Method         ${OFILE}    flush
+    ${IFILE}=           Open 'temp_binary.blob' for reading binary data
+    ${my_dict2}=        Parse '${IFILE}' using construct 'bson_document'
+    ${blob2}=           Generate binary from '${my_dict2}' using construct 'bson_document'
+    Should Be Equal     ${blob}    ${blob2}
+
+simple bson example using a file without buffering
+    Register construct 'document' from 'bson_construct' as 'bson_document'
+    ${my_dict}=         Create Dictionary    hey=you    number=${1}
+    ${blob}=            bson.encode       ${my_dict}
+    ${my_dict}=         Parse '${blob}' using construct 'bson_document'
+    ${my_dict}=         Evaluate    {'size': 30, 'elements': ([dict(type=2, name=u'hey', value=u'you'), dict(type=16, name=u'number', value=1)])}
+    ${OFILE}=           Open 'temp_binary.blob' for writing binary data without buffering
+    Write binary data generated from '${my_dict}' using construct 'bson_document' to '${OFILE}'
     ${IFILE}=           Open 'temp_binary.blob' for reading binary data
     ${my_dict2}=        Parse '${IFILE}' using construct 'bson_document'
     ${blob2}=           Generate binary from '${my_dict2}' using construct 'bson_document'

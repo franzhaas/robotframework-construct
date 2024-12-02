@@ -265,6 +265,16 @@ class robotframework_construct(regmap, reflector):
         | filepath    | The path to the file to be opened |
         """
         return open(filepath, "wb")
+    
+    @keyword("Open '${filepath}' for writing binary data without buffering")
+    def open_binary_file_to_write_without_buffering(self, filepath: typing.Union[str, pathlib.Path]) -> io.IOBase:
+        """Opens a file filepath for writing binary data.
+        
+        Arguments:
+        | =Arguments= | =Description= |
+        | filepath    | The path to the file to be opened |
+        """
+        return open(filepath, "wb", buffering=0)
 
     @keyword("Open ${protocol} connection to server '${server}' on port '${port}'")
     def open_socket(self, protocol: Protocol, server:str, port:int) -> socket.socket:
