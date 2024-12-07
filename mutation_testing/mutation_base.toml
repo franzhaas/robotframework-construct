@@ -2,7 +2,7 @@
 module-path = "src/robotframework_construct/__init__.py"
 timeout = 12
 excluded-modules = []
-test-command = "sh -c 'uv run robot -L TRACE --exitonfailure -P atests/bson/ -i mutation_base atests && uv run pytest -x tests/__init__.py'"
+test-command = "sh -c 'uv run robot --exitonfailure -P atests/bson/ -i mutation_base atests && uv run pytest -x tests/__init__.py'"
 
 [cosmic-ray.distributor]
 name = "local"

@@ -1,14 +1,14 @@
-name: CI_mutation_testing
+name: static_check_ruff
 
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ '**' ]
   pull_request:
     branches: [ '**' ]
-jobs:
-  run_mutation_Testing:
-    runs-on: ubuntu-latest
 
+jobs:
+  static_check_ruff:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
@@ -20,13 +20,7 @@ jobs:
         run: |
           uv tool install xonsh
   
-      - name: Run mutation tests
+      - name: Run ruff
         run: |
-          uvx xonsh tasks/mutationtests.xsh
+          uvx xonsh tasks/run_ruff.xsh
       
-      - name: Upload cosmic ray log
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: cosmic_ray_log
-          path: report_mutations*.html

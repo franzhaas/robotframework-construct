@@ -2,7 +2,7 @@
 module-path = "src/robotframework_construct/_reflector.py"
 timeout = 7.5
 excluded-modules = []
-test-command = "uv run robot -L TRACE --exitonfailure -P atests/bson/ -i mutation_reflector atests"
+test-command = "uv run robot --exitonfailure -P atests/bson/ -i mutation_reflector atests && uv run robot atests/reflector_self_shutdown/"
 
 [cosmic-ray.distributor]
 name = "local"

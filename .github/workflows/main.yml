@@ -1,4 +1,4 @@
-name: CI_simple
+name: atests_and_utests
 
 on:
   push:
