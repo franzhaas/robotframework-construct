@@ -1,10 +1,12 @@
 name: CI_mutation_testing
 
 on:
-  branches: [ 'main' ]
-
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ '**' ]
 jobs:
-  run-robot-tests:
+  run_mutation_Testing:
     runs-on: ubuntu-latest
 
     steps:
