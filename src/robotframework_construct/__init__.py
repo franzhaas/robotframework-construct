@@ -1,4 +1,6 @@
+import os
 import robot.api
+import pprint
 import construct
 import io
 import importlib
@@ -10,6 +12,7 @@ import pathlib
 import typing
 from robotframework_construct._regmap import regmap
 from robotframework_construct._reflector import reflector, Protocol, _port_mapping
+from unittest.mock import patch
 
 
 _U = typing.TypeVar("_U")
@@ -37,12 +40,13 @@ class robotframework_construct(regmap, reflector):
         super().__init__()
         self.set_element_seperator(element_seperator)
 
-    def _convert_to_current_type(self, expectedValue: _U, element: typing.Any) -> _U:
+    def _convert_type_to_match_old_value(self, oldValue: _U, newValue: typing.Any) -> _U:
         try:
-            expectedValue = type(element)(expectedValue)
+            if not isinstance(newValue, type(oldValue)):
+                newValue = type(oldValue)(newValue)
         except ValueError:
-            assert False, f"could not convert '{expectedValue}' of type '{type(expectedValue)}' to '{type(element)}' of the original value '{element}'"
-        return expectedValue
+            assert False, f"could not convert '{newValue}' of type '{type(newValue)}' to '{type(oldValue)}' of the original value '{oldValue}'"
+        return newValue
 
     def _get_element_from_constructDict(self, constructDict: typing.Union[dict, construct.Struct], locator: str) -> typing.Union[dict, construct.Struct]:
         assert isinstance(constructDict, dict), f"constructDict should be a dict, but was '{type(constructDict)}'"
@@ -68,10 +72,7 @@ class robotframework_construct(regmap, reflector):
             orig = constructDict[target]
         except (IndexError, KeyError):
             assert False, f"could not find '{locator}' in '{original}'"
-        try:
-            value = type(orig)(value)
-        except ValueError:
-            assert False, f"could not convert '{value}' of type '{type(value)}' to '{type(orig)}' of the original value '{orig}'"
+        value = self._convert_type_to_match_old_value(orig, value)
         constructDict[target] = value
 
     def _traverse_construct_for_element(self, constructDict: typing.Union[dict, construct.Struct], locator: str, original: typing.Union[dict, construct.Struct], item: str) -> typing.Union[dict, construct.Struct]:
@@ -109,7 +110,7 @@ class robotframework_construct(regmap, reflector):
         The locator is a name/index series seperated by the seperator. The seperator can be set with 'Set element seperator to', by default it is ".".
         """
         element = self._get_element_from_constructDict(constructDict, locator)
-        expectedValue = self._convert_to_current_type(expectedValue, element)
+        expectedValue = self._convert_type_to_match_old_value(element, expectedValue)
         assert element == expectedValue, f"observed value '{str(element)}' does not match expected '{expectedValue}' in '{str(constructDict)}' at '{locator}'"
 
     @keyword("Element '${locator}' in '${constructDict}' should not be equal to '${expectedValue}'")
@@ -125,7 +126,7 @@ class robotframework_construct(regmap, reflector):
         The locator is a name/index series seperated by the seperator. The seperator can be set with 'Set element seperator to', by default it is ".".
         """
         element = self._get_element_from_constructDict(constructDict, locator)
-        expectedValue = self._convert_to_current_type(expectedValue, element)
+        expectedValue = self._convert_type_to_match_old_value(element, expectedValue)
         assert element != expectedValue, f"observed value '{str(element)}' is not distinct to '{expectedValue}' in '{str(constructDict)}' at '{locator}'"
 
     @keyword("Get element '${locator}' from '${constructDict}'")
@@ -194,17 +195,28 @@ class robotframework_construct(regmap, reflector):
             case _:
                 assert False, f"binarydata should be a byte array or a readable binary file object/TCP/UDP socket, but was '{type(binarydata)}'"
 
-        match identifier:
-            case str():
-                try:
-                    rVal = self.constructs[identifier].parse_stream(binarydata)
-                except KeyError:
-                    assert False, f"could not find construct '{identifier}'"
-            case construct.Construct():
-                rVal = identifier.parse_stream(binarydata)
-            case _:
-                assert False, f"identifier should be a string or a construct.Construct, but was '{type(identifier)}'"
-        robot.api.logger.info(f"""parsed: {rVal} using {identifier} from {binarydata}""")
+        __rf_construct_input_bytes = []
+        __read_kept = binarydata.read
+        def read_and_track(*args, **kwargs):
+            rVal = __read_kept(*args, **kwargs)
+            __rf_construct_input_bytes.append(rVal)
+            return rVal
+
+        with patch.object(binarydata, "read", read_and_track):
+            match identifier:
+                case str():
+                    try:
+                        rVal = self.constructs[identifier].parse_stream(binarydata)
+                    except KeyError:
+                        assert False, f"could not find construct '{identifier}'"
+                case construct.Construct():
+                    rVal = identifier.parse_stream(binarydata)
+                case _:
+                    assert False, f"identifier should be a string or a construct.Construct, but was '{type(identifier)}'"
+
+        parsedRawBytes = b"".join(__rf_construct_input_bytes)
+        hexBuf = " ".join(f"{item:02x}" for item in parsedRawBytes)
+        robot.api.logger.info(f"""parsed: {rVal} using {identifier} from {hexBuf}""")
         return rVal
 
     @keyword("Generate binary from '${data}' using construct '${identifier}'")
@@ -221,7 +233,7 @@ class robotframework_construct(regmap, reflector):
                 rVal = self.constructs[identifier].build(data)
             case construct.Construct():
                 rVal = identifier.build(data)
-        robot.api.logger.info(f"""built: {rVal} using '{identifier}' from '{data}'""")
+        self._log_generated_bytes(identifier, rVal, data)
         return rVal
 
     @keyword("Write binary data generated from '${data}' using construct '${identifier}' to '${file}'")
@@ -239,12 +251,19 @@ class robotframework_construct(regmap, reflector):
                 rVal = (self.constructs[identifier].build(data))
             case construct.Construct():
                 rVal = identifier.build(data)
-        robot.api.logger.info(f"""built: {rVal} using '{identifier}' from '{data}'""")
+        self._log_generated_bytes(identifier, rVal, data)
         match file:
             case io.IOBase():
                 file.write(rVal)
             case socket.socket():
                 file.send(rVal)
+
+    def _log_generated_bytes(self, identifier, rVal, input):
+        hexBuf = " ".join(f"{item:02x}" for item in rVal[:64])
+        inputFormated = pprint.pformat(input)
+        if os.linesep in inputFormated:
+            inputFormated = f"{os.linesep}{inputFormated}"
+        robot.api.logger.info(f"""built: {hexBuf} (a total of {len(rVal)} bytes) using "{identifier}" from :"{inputFormated}" """)
 
     @keyword("Open '${filepath}' for reading binary data")
     def open_binary_file_to_read(self, filepath: typing.Union[str, pathlib.Path]) -> io.IOBase:
@@ -259,12 +278,22 @@ class robotframework_construct(regmap, reflector):
     @keyword("Open '${filepath}' for writing binary data")
     def open_binary_file_to_write(self, filepath: typing.Union[str, pathlib.Path]) -> io.IOBase:
         """Opens a file filepath for writing binary data.
-        
+
         Arguments:
         | =Arguments= | =Description= |
         | filepath    | The path to the file to be opened |
         """
         return open(filepath, "wb")
+
+    @keyword("Open '${filepath}' for writing binary data without buffering")
+    def open_binary_file_to_write_without_buffering(self, filepath: typing.Union[str, pathlib.Path]) -> io.IOBase:
+        """Opens a file filepath for writing binary data.
+
+        Arguments:
+        | =Arguments= | =Description= |
+        | filepath    | The path to the file to be opened |
+        """
+        return open(filepath, "wb", buffering=0)
 
     @keyword("Open ${protocol} connection to server '${server}' on port '${port}'")
     def open_socket(self, protocol: Protocol, server:str, port:int) -> socket.socket:

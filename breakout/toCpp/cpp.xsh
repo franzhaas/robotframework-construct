@@ -1,8 +1,6 @@
 import itertools
 
-
 cd breakout/toCpp
-
 
 exec(open('../../atests/regmapmockup/math_coprocessor_regmap.py').read())
 
@@ -24,7 +22,8 @@ for add, sub, mul, div in itertools.product([0, 1], repeat=4):
     print(f"build using construct: {obj}")
     math_coprocessor_map.build_file(obj, f"./example.bin")
     r = !(./regmap)
-    print(f"parsed with cpp:\n{r}")
-    print("================================================================")
-    print()
+    print(f"""parsed with cpp:\n{r}
+================================================================
+""")
+
 

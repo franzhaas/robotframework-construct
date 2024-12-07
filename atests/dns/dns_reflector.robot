@@ -3,6 +3,7 @@ Documentation      This is a simple example for a robot file using robotframewor
 Variables          dns_construct.py
 Library            robotframework_construct
 Test Tags          mutation_reflector
+Test Teardown      Shutdown Reflector
 *** Test Cases ***
 basic dns request tcp
     ${PORT1}    ${PORT2}=      Reflect traffic between ports using 'TCP'
@@ -12,7 +13,6 @@ basic dns request tcp
     ${record1}=       Parse '${connection2}' using construct '${dns_payload_tcp}'
     Write binary data generated from '${exampleRequestRoboconTcp}' using construct '${dns_payload_tcp}' to '${connection2}'
     ${record2}=       Parse '${connection1}' using construct '${dns_payload_tcp}'
-    Shutdown Reflector
 
 basic dns request udp
     [Tags]    mutation_base
@@ -23,9 +23,13 @@ basic dns request udp
     ${record1}=       Parse '${connection2}' using construct '${dns_payload_udp}'
     Write binary data generated from '${exampleRequestRoboconUdp}' using construct '${dns_payload_udp}' to '${connection2}'
     ${record2}=       Parse '${connection1}' using construct '${dns_payload_udp}'
-    Shutdown Reflector
-
-negative reflect tests
+    
+verify that double reflection is not possible with TCP
     ${PORT1}    ${PORT2}=           Reflect traffic between ports using 'TCP'
     ${connection1}=                 Open TCP connection to server '127.0.0.1' on port '${PORT1}'
     Run Keyword And Expect Error    *Connection*: * Connection*          Open TCP connection to server '127.0.0.1' on port '${PORT1}'
+
+verify that double reflection is possible with UDP
+    ${PORT1}    ${PORT2}=           Reflect traffic between ports using 'UDP'
+    ${connection1}=                 Open UDP connection to server '127.0.0.1' on port '${PORT1}'
+    Open UDP connection to server '127.0.0.1' on port '${PORT1}'
