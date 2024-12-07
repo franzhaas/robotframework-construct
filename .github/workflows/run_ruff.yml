@@ -7,12 +7,8 @@ on:
     branches: [ '**' ]
 
 jobs:
-  run-robot-tests:
+  build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["pypy3.10", "3.10", "3.11", "3.12", "3.13"]
-
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
