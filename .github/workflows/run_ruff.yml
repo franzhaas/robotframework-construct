@@ -1,4 +1,4 @@
-name: CI_simple
+name: static_check_ruff
 
 on:
   push:
