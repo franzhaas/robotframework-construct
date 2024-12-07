@@ -1,4 +1,6 @@
+import os
 import robotframework_construct
+import robot.api.logger
 import pytest
 
 
@@ -26,3 +28,40 @@ def test_impossible_params():
     with pytest.raises(AssertionError) as excinfo:
         robotframework_construct.robotframework_construct().open_socket("raw", 0,0)
     assert "protocol should be either 'TCP or 'UDP', but was 'raw'" == str(excinfo.value)
+
+loggerInput = None
+
+@pytest.fixture
+def mock_logger(monkeypatch):
+    def logger(message):
+        global loggerInput
+        loggerInput = message
+
+    monkeypatch.setattr(robot.api.logger, "info", logger)
+
+def test_logging_feature_with_hex_output(mock_logger):
+    rc = robotframework_construct.robotframework_construct()
+    rc._log_generated_bytes(1, b"", {a: a for a in range(12)})
+    assert os.linesep not in loggerInput
+
+def test_logging_feature_with_hex_output_Extra_newline(mock_logger):
+    rc = robotframework_construct.robotframework_construct()
+    rc._log_generated_bytes(1, b"", {a: a for a in range(13)})
+    assert os.linesep in loggerInput
+    assert f'''" from :"{os.linesep}'''
+
+
+def test_logging_feature_with_long_buf(mock_logger):
+    rc = robotframework_construct.robotframework_construct()
+    binBuf = b"\x01" * 65
+    rc._log_generated_bytes(1, binBuf, 1)
+    assert "01 "*64 in loggerInput
+    assert "01 "*65 not in loggerInput
+
+
+
+    
+
+
+    
+
