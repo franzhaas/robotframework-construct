@@ -1,8 +1,7 @@
 name: CI_mutation_testing
 
 on:
-  pull_request:
-    branches: [ '**' ]
+  branches: [ 'main' ]
 
 jobs:
   run-robot-tests:
@@ -27,6 +26,7 @@ jobs:
           uvx xonsh tasks/mutationtests.xsh
       
       - name: Upload cosmic ray log
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: cosmic_ray_log
