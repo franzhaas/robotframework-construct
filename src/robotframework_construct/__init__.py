@@ -12,7 +12,6 @@ import pathlib
 import typing
 from robotframework_construct._regmap import regmap
 from robotframework_construct._reflector import reflector, Protocol, _port_mapping
-from unittest.mock import patch
 
 
 _U = typing.TypeVar("_U")
@@ -175,7 +174,7 @@ class robotframework_construct(regmap, reflector):
         self.constructs[identifier] = spec
 
     @keyword("Parse '${binarydata}' using construct '${identifier}'")
-    def parse_binary_data_using_construct(self, binarydata: bytes|io.IOBase|socket.socket, identifier: typing.Union[str, construct.Construct]) -> construct.Struct:
+    def parse_binary_data_using_construct(self, binarydata: typing.Union[bytes, io.IOBase, socket.socket], identifier: typing.Union[str, construct.Construct]) -> construct.Struct:
         """Parses binary data using a construct. The binary data can be a byte array, a readable binary file object, or a TCP/UDP socket.
 
         Arguments:
@@ -195,13 +194,15 @@ class robotframework_construct(regmap, reflector):
                 assert False, f"binarydata should be a byte array or a readable binary file object/TCP/UDP socket, but was '{type(binarydata)}'"
 
         __rf_construct_input_bytes = []
-        __read_kept = binarydata.read
+        original_read = binarydata.read
+
         def read_and_track(*args, **kwargs):
-            rVal = __read_kept(*args, **kwargs)
+            rVal = original_read(*args, **kwargs)
             __rf_construct_input_bytes.append(rVal)
             return rVal
 
-        with patch.object(binarydata, "read", read_and_track):
+        try:
+            binarydata.read = read_and_track
             match identifier:
                 case str():
                     try:
@@ -212,6 +213,8 @@ class robotframework_construct(regmap, reflector):
                     rVal = identifier.parse_stream(binarydata)
                 case _:
                     assert False, f"identifier should be a string or a construct.Construct, but was '{type(identifier)}'"
+        finally:
+            binarydata.read = original_read
 
         parsedRawBytes = b"".join(__rf_construct_input_bytes)
         hexBuf = " ".join(f"{item:02x}" for item in parsedRawBytes)
