@@ -126,7 +126,7 @@ The Structs can be transformed into kaitai. Kaitai is a DSL that can be transfor
 
 Keep in mind that some limitations apply to these transformations.
 
-For reference: [./tasks/breakoutCpp.xsh], which is a script that demonstrates how to transform Construct declarations into a C++ parser using the Kaitai DSL.
+For reference, a [script](./tasks/breakoutCpp.xsh) demonstrates how to transform Construct declarations into a C++ parser using the Kaitai DSL.
 
 ## Relationships in the Ecosystem
 
@@ -142,7 +142,7 @@ Construct has no non-optional dependencies.
 
 ### [Robot Framework](https://robotframework.org/)
 
-This project connects Construct with Robot Framework. Only official APIs are used, and this project depends entirely on Robot Framework.
+This project connects Construct with Robot Framework. Only official APIs are used. This project depends on the Robot Framework.
 
 Robot Framework has no non-optional dependencies.
 
@@ -154,7 +154,7 @@ Instead of maintaining Rammbock, we chose to integrate Construct.
 
 #### Reasoning
 
-Both Rammbock and Construct have limited engineering resources, but Construct is currently better supported. Construct also collaborates with Kaitai, engaging communities in C#, C++, and other ecosystems.
+Rammbock and Construct have limited engineering resources, but Construct is currently better supported. Construct collaborates with Kaitai, engaging communities in C#, C++, and other ecosystems.
 
 Using Construct provides a clear separation between parsing/generating logic and interface code, enabling expansion into other ecosystems.
 
@@ -168,9 +168,9 @@ pip install robotframework-construct
 
 ## Limitations
 
-Construct declarations must be written in `.py` files. There are no plans to integrate the Construct DSL into Robot Framework.
+Construct declarations must be written in `.py` files. The Construct DSL is not planned to be integrated into the Robot Framework.
 
-This eases the breaking out of the robot-framework and Python ecosystems.
+This eases the breaking out of the Robot Framework and Python ecosystems.
 
 ## Quality Control Measures
 
@@ -178,7 +178,7 @@ Tested examples and acceptance tests using Robot Framework are provided. Unit te
 
 ### Mutation Testing
 
-Since this project primarily consists of interface code, it is crucial to catch user errors and produce clear error messages. Mutation testing ensures that all code paths and error messages are tested, supporting efforts to make errors informative.
+Since this project primarily consists of interface code, catching user errors and producing clear error messages is crucial. Mutation testing ensures that all code paths and error messages are tested, supporting efforts to make errors informative.
 
 ## Project To-Do List
 
@@ -187,16 +187,16 @@ Since this project primarily consists of interface code, it is crucial to catch 
 - [x] Generating functionality demonstrated with an in-memory BSON object.
 - [x] Generating functionality demonstrated with a binary file.
 - [x] Register read/write demonstrated with a mockup register.
-- [x] Receive/transmit network example using DNS.
+- [x] Receive/transmit network examples using DNS.
 - [x] Reflector tool to allow to implement servers using clients.
 - [x] Upload wheel to pypi.
 - [x] Increase test coverage (Mutant killing) of the reflector
-- [x] Segmentise mutation testing to speedup
-- [x] Comment and document the real world example with the USB HID keyboard
-- [x] Add a second real world example with binary interface to Readme
+- [x] Segmentise mutation testing to speed up
+- [x] Comment and document the real-world example with the USB HID keyboard
+- [x] Add a second real-world example with a binary interface to Readme
 - [x] Have libdoc documentation online
 - [x] Have libdoc documentation online for all keywords, not only the central ones
 - [ ] User guide and tutorials/Article for (https://medium.com/@RobotFramework/).
-- [x] Example on how to breakout of the python ecosystem
+- [x] Example of how to break out of the Python ecosystem
 - [x] Midway review with Robot Framework Foundation.
-- [ ] Final review with Robot Framework Foundation.
+- [x] Final review with Robot Framework Foundation.
