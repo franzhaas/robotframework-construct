@@ -1,5 +1,12 @@
 # Changelog
 
+## Robotframework_Construct 0.3.1 (2024-12-17)
+
+### Changes
+
+ - fixed readme
+
+
 ## Robotframework_Construct 0.3.0 (2024-12-17)
 
 ### Features
