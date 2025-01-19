@@ -23,7 +23,7 @@ class nfc_interface():
 
         self._serial_connection = timeoutExceptionOnTimeoutSerial(device, baudrate, timeout=timeout)
         self._serial_connection.reset_input_buffer()
-        return self._serial_connection # Alternatively, on linux we can use self._serial_connection.fileno() + select instead of the timeout read...
+        return self._serial_connection
 
 
     def wait_for_data_from_nfc(self, timeout: float = 1.0):
@@ -34,7 +34,8 @@ class nfc_interface():
         """
         if self._serial_connection and self._serial_connection.is_open:
             try:
-                select.select([self._serial_connection.fileno()], [], [], timeout)
+                fd0, _, __ = select.select([self._serial_connection.fileno()], [], [], timeout)
+                assert fd0, "Timeout while waiting for data from NFC device"
             except io.UnsupportedOperation:
                     # Windows does not support select on serial ports, so we have to do it the hard way
                     endTime = time.time() + timeout
